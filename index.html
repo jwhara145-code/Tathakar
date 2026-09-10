@@ -2,234 +2,214 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سنن مهجورة | إحياء الأثر</title>
-    <!-- استدعاء خط عربي أنيق (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تَذَكَّر | Tathakkar</title>
+    <!-- استدعاء خطوط عصرية وروحانية -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
     <style>
+        /* المتغيرات الأساسية وأنماط الألوان */
         :root {
-            --cherry: #560D07;
-            --crimson: #8B0F05;
-            --bounty: #7B9CBD;
-            --ivory: #FDF7EB;
-            --glass-bg: rgba(86, 13, 7, 0.35);
-            --glass-card: rgba(253, 247, 235, 0.05);
-            --border-glow: rgba(123, 156, 189, 0.2);
+            /* النمط الفاتح (الافتراضي) */
+            --bg-color: #FDF7EB;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --header-bg: rgba(253, 247, 235, 0.85);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --particle-color: rgba(139, 15, 5, 0.1);
+        }
+
+        [data-theme="dark"] {
+            /* النمط الليلي */
+            --bg-color: #121212;
+            --text-main: #FDF7EB;
+            --text-muted: #AAAAAA;
+            --glass-bg: rgba(30, 30, 30, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(18, 18, 18, 0.85);
+            --input-bg: rgba(0, 0, 0, 0.5);
+            --particle-color: rgba(253, 247, 235, 0.05);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         body {
-            background-color: var(--cherry);
-            color: var(--ivory);
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(139, 15, 5, 0.4) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(123, 156, 189, 0.15) 0%, transparent 40%);
-            padding-bottom: 50px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* لمنع التمرير العام، التمرير سيكون للمنشورات فقط */
+            position: relative;
         }
 
+        /* العناصر المتحركة في الخلفية */
+        #particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--particle-color);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+        }
+
+        /* الشاشة الافتتاحية التفاعلية */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(135deg, #560D07, #8B0F05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        #splash h1 {
+            font-size: 4rem;
+            color: #FDF7EB;
+            font-weight: 900;
+            z-index: 2;
+            animation: pulse 2s infinite alternate;
+        }
+
+        #splash p {
+            color: #FDF7EB;
+            opacity: 0.8;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            z-index: 2;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transform: scale(0);
+            animation: rippleEffect 1s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes rippleEffect {
+            to { transform: scale(15); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* الشريط العلوي */
         header {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-glow);
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: var(--header-bg);
+            backdrop-filter: blur(15px);
+            z-index: 10;
+            border-bottom: 1px solid var(--glass-border);
         }
 
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 900;
-            color: var(--ivory);
-            margin-bottom: 10px;
-            letter-spacing: -1px;
+            margin: 0;
         }
 
-        header p {
-            color: var(--bounty);
-            font-size: 1.1rem;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* لوحة التحكم والتبويب */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .tab-btn {
-            background: var(--glass-card);
-            border: 1px solid var(--border-glow);
-            color: var(--ivory);
-            padding: 10px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background: var(--crimson);
-            border-color: var(--bounty);
-            box-shadow: 0 0 15px rgba(139, 15, 5, 0.5);
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        /* نموذج النشر */
-        .card-glass {
-            background: rgba(253, 247, 235, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-glow);
+        .controls button {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px 12px;
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--bounty);
-            font-weight: 600;
-        }
-
-        input[type="text"], textarea, select {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(253, 247, 235, 0.07);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            color: var(--ivory);
-            font-size: 1rem;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--bounty);
-            box-shadow: 0 0 10px rgba(123, 156, 189, 0.3);
-        }
-
-        .color-picker-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .color-option {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
-        }
-
-        .color-option.selected {
-            border-color: var(--ivory);
-            transform: scale(1.15);
-            box-shadow: 0 0 10px var(--ivory);
-        }
-
-        .symbols-group {
-            display: flex;
-            gap: 10px;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .symbol-option {
-            padding: 5px 10px;
-            background: rgba(253, 247, 235, 0.05);
-            border-radius: 8px;
-            border: 1px solid transparent;
-            transition: 0.2s;
-        }
-
-        .symbol-option.selected {
-            background: var(--crimson);
-            border-color: var(--bounty);
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, var(--crimson), var(--cherry));
-            color: var(--ivory);
-            border: 1px solid var(--bounty);
-            padding: 12px 30px;
-            border-radius: 12px;
-            font-size: 1.1rem;
             font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
+            margin-left: 5px;
+            margin-right: 5px;
         }
 
-        .submit-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 20px rgba(139, 15, 5, 0.8);
+        /* منطقة عرض المنشورات */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            z-index: 5;
+            scroll-behavior: smooth;
+            padding-bottom: 250px; /* لتجنب التغطية من قبل شريط الإضافة */
         }
 
-        /* شبكة المنشورات */
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+            font-size: 1.2rem;
+        }
+
         .posts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .post-card {
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(253, 247, 235, 0.15);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.5s forwards ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .post-card:hover {
-            transform: translateY(-5px);
+        @keyframes slideUp {
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .post-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-            opacity: 0.85;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        .post-symbol {
-            font-size: 1.6rem;
-        }
+        .post-symbol { font-size: 2rem; }
 
         .post-content {
-            font-size: 1.055rem;
+            font-family: 'Amiri', serif;
+            font-size: 1.4rem;
             line-height: 1.6;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             word-break: break-word;
         }
 
@@ -237,292 +217,369 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid rgba(253, 247, 235, 0.1);
-            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 15px;
         }
 
         .like-btn {
-            background: none;
+            background: rgba(255,255,255,0.2);
             border: none;
-            color: var(--ivory);
+            color: #fff;
             cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-weight: 700;
             font-size: 1rem;
             transition: 0.2s;
         }
 
-        .like-btn:hover {
-            color: #ff6b6b;
-            transform: scale(1.1);
+        .like-btn:hover { background: rgba(255,255,255,0.4); transform: scale(1.05); }
+
+        /* شريط الإضافة السفلي (Fixed Footer Form) */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            z-index: 10;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
         }
 
-        /* لوحة الصدارة */
-        .leaderboard-list {
+        .add-form-container {
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .leaderboard-item {
+        .inputs-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input, textarea {
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 12px;
+            outline: none;
+        }
+        
+        input { flex: 1; }
+        textarea { flex: 3; resize: none; font-family: 'Amiri', serif; font-size: 1.2rem;}
+
+        .tools-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(253, 247, 235, 0.04);
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-glow);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .rank {
-            font-weight: 900;
-            color: var(--bounty);
-            font-size: 1.2rem;
-            margin-left: 15px;
+        .scrollable-options {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            max-width: 40%;
+        }
+        .scrollable-options::-webkit-scrollbar { height: 4px; }
+        .scrollable-options::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+        .color-circle {
+            min-width: 30px; height: 30px; border-radius: 50%;
+            cursor: pointer; border: 2px solid transparent; transition: 0.2s;
+        }
+        .color-circle.active { border-color: var(--text-main); transform: scale(1.2); }
+
+        .emoji-btn {
+            min-width: 35px; text-align: center; font-size: 1.5rem;
+            cursor: pointer; filter: grayscale(100%); transition: 0.2s;
+        }
+        .emoji-btn.active { filter: grayscale(0%); transform: scale(1.3); }
+
+        .submit-btn {
+            background: #8B0F05;
+            color: #FDF7EB;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .submit-btn:hover { background: #560D07; transform: translateY(-2px); }
+
+        /* استجابة الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .inputs-row { flex-direction: column; }
+            .tools-row { flex-direction: column; align-items: stretch; }
+            .scrollable-options { max-width: 100%; justify-content: center; }
+            header h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-    <header>
-        <h1>سُنَن مُهجورة ✨</h1>
-        <p>أحيِ سُنةً نبيّك.. واجعل أثرها يمتد في حياتنا ومجتمعنا المدرسي</p>
-    </header>
+    <!-- الخلفية المتحركة -->
+    <div id="particles"></div>
 
-    <div class="container">
-        <!-- أزرار التنقل بين الأقسام -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('feed')">المنشورات الحية 🌐</button>
-            <button class="tab-btn" onclick="switchTab('add')">انشر سُنة ✍️</button>
-            <button class="tab-btn" onclick="switchTab('leaderboard')">لوحة الصدارة 🏆</button>
-        </div>
-
-        <!-- قسم المنشورات الحية -->
-        <div id="feed-section" class="section active">
-            <div id="postsContainer" class="posts-grid">
-                <!-- ستتم تعبئة المنشورات ديناميكياً -->
-            </div>
-        </div>
-
-        <!-- قسم إضافة منشور جديد -->
-        <div id="add-section" class="section">
-            <div class="card-glass">
-                <form id="sunnahForm" onsubmit="addPost(event)">
-                    <div class="form-group">
-                        <label for="authorName">اسمك أو اللقب:</label>
-                        <input type="text" id="authorName" placeholder="مثال: فاعلة خير / طالبة منسقة" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="postText">نص السنة المهجورة وطريقة تطبيقها:</label>
-                        <textarea id="postText" rows="4" placeholder="اكتبي السنة هنا باختصار وجمال..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>اختر لون بطاقة المنشور:</label>
-                        <div class="color-picker-group">
-                            <div class="color-option selected" style="background-color: #560D07;" onclick="selectColor('#560D07', this)" data-color="#560D07"></div>
-                            <div class="color-option" style="background-color: #8B0F05;" onclick="selectColor('#8B0F05', this)" data-color="#8B0F05"></div>
-                            <div class="color-option" style="background-color: #7B9CBD;" onclick="selectColor('#7B9CBD', this)" data-color="#7B9CBD"></div>
-                            <div class="color-option" style="background-color: #31445b;" onclick="selectColor('#31445b', this)" data-color="#31445b"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>اختر رمزاً جمالياً يزين منشورك:</label>
-                        <div class="symbols-group">
-                            <span class="symbol-option selected" onclick="selectSymbol('🌸', this)">🌸</span>
-                            <span class="symbol-option" onclick="selectSymbol('🌿', this)">🌿</span>
-                            <span class="symbol-option" onclick="selectSymbol('✨', this)">✨</span>
-                            <span class="symbol-option" onclick="selectSymbol('🤍', this)">🤍</span>
-                            <span class="symbol-option" onclick="selectSymbol('☕', this)">☕</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn">انشر الأجر الآن 🚀</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- قسم لوحة الصدارة -->
-        <div id="leaderboard-section" class="section">
-            <div class="card-glass">
-                <h3 style="margin-bottom: 20px; color: var(--bounty);">🏆 المنشورات الأكثر تفاعلاً وإعجاباً</h3>
-                <div id="leaderboardContainer" class="leaderboard-list">
-                    <!-- ستتم تعبئة الصدارة ديناميكياً -->
-                </div>
-            </div>
-        </div>
+    <!-- الشاشة الافتتاحية -->
+    <div id="splash" onclick="dismissSplash(event)">
+        <h1 data-i18n="splashTitle">تَذَكَّر</h1>
+        <p data-i18n="splashSubtitle">اضغط للبدء واكتشاف الأثر ✨</p>
     </div>
 
+    <!-- الشريط العلوي -->
+    <header>
+        <h1 data-i18n="title">تَذَكَّر 🤍</h1>
+        <div class="controls">
+            <button onclick="toggleTheme()" id="themeBtn">🌙</button>
+            <button onclick="toggleLang()" id="langBtn">EN</button>
+        </div>
+    </header>
+
+    <!-- منطقة عرض المنشورات -->
+    <main id="mainContent">
+        <div id="postsContainer" class="posts-grid">
+            <!-- سيتم توليد المنشورات هنا -->
+        </div>
+    </main>
+
+    <!-- شريط الإضافة السفلي -->
+    <footer>
+        <form class="add-form-container" onsubmit="addPost(event)">
+            <div class="inputs-row">
+                <input type="text" id="authorInput" data-i18n-placeholder="authorPlaceholder" placeholder="اسمك أو اللقب" required>
+                <textarea id="textInput" rows="2" data-i18n-placeholder="sunnahPlaceholder" placeholder="اكتب السنة المهجورة هنا..." required></textarea>
+            </div>
+            
+            <div class="tools-row">
+                <!-- الألوان -->
+                <div class="scrollable-options" id="colorPicker">
+                    <div class="color-circle active" style="background: #8B0F05;" data-color="#8B0F05"></div>
+                    <div class="color-circle" style="background: #F1C40F;" data-color="#E2B10B"></div> <!-- أصفر -->
+                    <div class="color-circle" style="background: #27AE60;" data-color="#27AE60"></div> <!-- أخضر -->
+                    <div class="color-circle" style="background: #E84393;" data-color="#E84393"></div> <!-- وردي -->
+                    <div class="color-circle" style="background: #7F8C8D;" data-color="#7F8C8D"></div> <!-- رمادي -->
+                    <div class="color-circle" style="background: #2980B9;" data-color="#2980B9"></div> <!-- أزرق -->
+                </div>
+
+                <!-- الإيموجي -->
+                <div class="scrollable-options" id="emojiPicker">
+                    <div class="emoji-btn active" data-emoji="🌸">🌸</div>
+                    <div class="emoji-btn" data-emoji="🌿">🌿</div>
+                    <div class="emoji-btn" data-emoji="✨">✨</div>
+                    <div class="emoji-btn" data-emoji="🤍">🤍</div>
+                    <div class="emoji-btn" data-emoji="🕌">🕌</div>
+                    <div class="emoji-btn" data-emoji="📖">📖</div>
+                    <div class="emoji-btn" data-emoji="💡">💡</div>
+                    <div class="emoji-btn" data-emoji="🕊️">🕊️</div>
+                </div>
+
+                <button type="submit" class="submit-btn" data-i18n="publishBtn">انشر السُّنة 🚀</button>
+            </div>
+        </form>
+    </footer>
+
     <script>
-        // إعدادات الحالة والبيانات الأولية
-        let selectedColor = '#560D07';
-        let selectedSymbol = '🌸';
-
-        // بيانات تجريبية أولية لإثراء الموقع عند فتحه لأول مرة
-        let posts = JSON.parse(localStorage.getItem('sunnah_posts')) || [
-            {
-                id: 1,
-                name: 'سارة العتيبي',
-                text: 'سنة المضمضة والاستنشاق من كف واحدة (الجمع بينهما بماء واحد لتوفير الماء والاقتداء الكامل).',
-                color: '#8B0F05',
-                symbol: '🌿',
-                likes: 14
+        // ---------------- قاموس الترجمة (Bilingual) ---------------- //
+        const translations = {
+            ar: {
+                splashTitle: "تَذَكَّر",
+                splashSubtitle: "اضغط للبدء واكتشاف الأثر ✨",
+                title: "تَذَكَّر 🤍",
+                authorPlaceholder: "اسمك أو اللقب",
+                sunnahPlaceholder: "اكتب السنة المهجورة هنا...",
+                publishBtn: "انشر السُّنة 🚀",
+                emptyState: "لا توجد سنن منشورة بعد.. كن أول المبادرين! ✨",
+                likes: "إعجاب"
             },
-            {
-                id: 2,
-                name: 'رهف القحطاني',
-                text: 'نفض الفراش ثلاث مرات قبل النوم وقول الدعاء الوارد.',
-                color: '#560D07',
-                symbol: '✨',
-                likes: 22
-            },
-            {
-                id: 3,
-                name: 'نورة الدوسري',
-                text: 'إفشاء السلام على من عرفت ومن لم تعرف لتأليف القلوب.',
-                color: '#7B9CBD',
-                symbol: '🤍',
-                likes: 19
+            en: {
+                splashTitle: "Tathakkar",
+                splashSubtitle: "Tap to begin and discover the impact ✨",
+                title: "Tathakkar 🤍",
+                authorPlaceholder: "Your Name or Alias",
+                sunnahPlaceholder: "Write the forgotten Sunnah here...",
+                publishBtn: "Publish Sunnah 🚀",
+                emptyState: "No Sunnahs published yet.. Be the first! ✨",
+                likes: "Likes"
             }
-        ];
+        };
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        let currentLang = 'ar';
+        let currentTheme = 'light';
+        let selectedColor = '#8B0F05';
+        let selectedEmoji = '🌸';
 
-            if (tabId === 'feed') {
-                document.getElementById('feed-section').classList.add('active');
-                event.target.classList.add('active');
-                renderPosts();
-            } else if (tabId === 'add') {
-                document.getElementById('add-section').classList.add('active');
-                event.target.classList.add('active');
-            } else if (tabId === 'leaderboard') {
-                document.getElementById('leaderboard-section').classList.add('active');
-                event.target.classList.add('active');
-                renderLeaderboard();
+        // تحميل المنشورات من التخزين المحلي (فارغة في البداية)
+        let posts = JSON.parse(localStorage.getItem('tathakkar_real_posts')) || [];
+
+        // ---------------- إنشاء العناصر المتحركة في الخلفية ---------------- //
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for(let i = 0; i < 20; i++) {
+                let p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.width = p.style.height = (Math.random() * 40 + 10) + 'px';
+                p.style.animationDelay = (Math.random() * 15) + 's';
+                container.appendChild(p);
             }
         }
 
-        function selectColor(color, element) {
-            selectedColor = color;
-            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
+        // ---------------- الشاشة الافتتاحية التفاعلية ---------------- //
+        function dismissSplash(e) {
+            const splash = document.getElementById('splash');
+            
+            // تأثير التموج (Ripple Effect)
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            splash.appendChild(ripple);
+
+            // إخفاء الشاشة بعد الحركة
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 600);
         }
 
-        function selectSymbol(symbol, element) {
-            selectedSymbol = symbol;
-            document.querySelectorAll('.symbol-option').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
+        // ---------------- تبديل اللغة (Arabic / English) ---------------- //
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('langBtn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
+            
+            updateTranslations();
+            renderPosts(); // لتحديث كلمة "إعجاب/Likes" في المنشورات
         }
 
+        function updateTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.innerText = translations[currentLang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = translations[currentLang][key];
+            });
+        }
+
+        // ---------------- تبديل النمط (Light / Dark) ---------------- //
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeBtn').innerText = currentTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // ---------------- إعداد اختيار الألوان والإيموجي ---------------- //
+        document.querySelectorAll('.color-circle').forEach(circle => {
+            circle.addEventListener('click', function() {
+                document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                selectedColor = this.getAttribute('data-color');
+            });
+        });
+
+        document.querySelectorAll('.emoji-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedEmoji = this.getAttribute('data-emoji');
+            });
+        });
+
+        // ---------------- إضافة منشور جديد ---------------- //
         function addPost(e) {
             e.preventDefault();
-            const name = document.getElementById('authorName').value;
-            const text = document.getElementById('postText').value;
+            const author = document.getElementById('authorInput').value.trim();
+            const text = document.getElementById('textInput').value.trim();
+
+            if(!author || !text) return;
 
             const newPost = {
                 id: Date.now(),
-                name: name,
+                author: author,
                 text: text,
                 color: selectedColor,
-                symbol: selectedSymbol,
+                emoji: selectedEmoji,
                 likes: 0
             };
 
-            posts.unshift(newPost);
-            saveAndRefresh();
+            posts.unshift(newPost); // إضافة للأعلى
+            saveData();
+            renderPosts();
             
-            // إعادة تعيين النموذج والذهاب تلقائياً للمنشورات
-            document.getElementById('sunnahForm').reset();
-            switchTabDirect('feed');
-        }
-
-        function switchTabDirect(tabId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if(tabId === 'feed') {
-                document.getElementById('feed-section').classList.add('active');
-                document.querySelector('.tab-btn').classList.add('active');
-                renderPosts();
-            }
+            // تفريغ الحقول
+            document.getElementById('textInput').value = '';
+            
+            // التمرير للأعلى لرؤية المنشور الجديد
+            document.getElementById('mainContent').scrollTo(0, 0);
         }
 
         function likePost(id) {
             const post = posts.find(p => p.id === id);
             if (post) {
-                post.likes += 1;
-                saveAndRefresh();
+                post.likes++;
+                saveData();
+                renderPosts();
             }
         }
 
-        function saveAndRefresh() {
-            localStorage.setItem('sunnah_posts', JSON.stringify(posts));
-            renderPosts();
-            renderLeaderboard();
+        function saveData() {
+            localStorage.setItem('tathakkar_real_posts', JSON.stringify(posts));
         }
 
+        // ---------------- عرض المنشورات ---------------- //
         function renderPosts() {
             const container = document.getElementById('postsContainer');
             container.innerHTML = '';
 
             if (posts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color: var(--bounty); grid-column: 1/-1;">لا توجد منشورات بعد.. كوني أول من ينشر سُنة! ✨</p>';
+                container.innerHTML = `<div class="empty-state">${translations[currentLang].emptyState}</div>`;
                 return;
             }
 
             posts.forEach(post => {
                 const card = document.createElement('div');
                 card.className = 'post-card';
-                card.style.backgroundColor = post.color;
+                card.style.background = post.color;
+                
                 card.innerHTML = `
                     <div class="post-header">
-                        <span>${post.name}</span>
-                        <span class="post-symbol">${post.symbol}</span>
+                        <span>${post.author}</span>
+                        <span class="post-symbol">${post.emoji}</span>
                     </div>
                     <div class="post-content">${post.text}</div>
                     <div class="post-footer">
                         <button class="like-btn" onclick="likePost(${post.id})">
-                            ❤️ <span>${post.likes}</span> إعجاب
+                            ❤️ ${post.likes} ${translations[currentLang].likes}
                         </button>
-                        <span style="font-size: 0.8rem; opacity: 0.7;">سُنة مهجورة</span>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function renderLeaderboard() {
-            const container = document.getElementById('leaderboardContainer');
-            container.innerHTML = '';
-
-            // ترتيب المنشورات تنازلياً حسب عدد الإعجابات (دوري/مستمر)
-            const sortedPosts = [...posts].sort((a, b) => b.likes - a.likes);
-
-            sortedPosts.forEach((post, index) => {
-                const item = document.createElement('div');
-                item.className = 'leaderboard-item';
-                item.innerHTML = `
-                    <div style="display: flex; align-items: center;">
-                        <span class="rank">#${index + 1}</span>
-                        <div>
-                            <div style="font-weight: 700; margin-bottom: 4px;">${post.text.substring(0, 45)}...</div>
-                            <div style="font-size: 0.85rem; color: var(--bounty);">بواسطة: ${post.name} ${post.symbol}</div>
-                        </div>
-                    </div>
-                    <div style="font-weight: 900; color: #ff6b6b; font-size: 1.1rem;">
-                        ❤️ ${post.likes}
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // تشغيل العرض عند تحميل الصفحة أول مرة
-        renderPosts();
+        // ---------------- التهيئة الأولية (Init) ---------------- //
+        window.onload = () => {
+            createParticles();
+            updateTranslations();
+            renderPosts();
+        };
     </script>
 </body>
 </html>
