@@ -5,31 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تَذَكَّر | المبادرة المدرسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
-    
-    <!-- مكتبة حفظ الصور -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
-            --forest-green: #073B2F;
-            --burgundy: #5E202B;
-            --pale-sage: #F0FFDA;
-            --petal-blush: #FAC7FF;
-
-            --bg-color: #e9f2e3;
-            --text-main: var(--forest-green);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-shadow: 0 8px 32px 0 rgba(7, 59, 47, 0.1);
+            --forest-green: #073B2F; --burgundy: #5E202B; --pale-sage: #F0FFDA; --petal-blush: #FAC7FF;
+            --bg-color: #e9f2e3; --text-main: var(--forest-green);
+            --glass-border: rgba(255, 255, 255, 0.4); --glass-shadow: 0 8px 32px 0 rgba(7, 59, 47, 0.1);
         }
 
         [data-theme="dark"] {
-            --bg-color: #04241d;
-            --text-main: var(--pale-sage);
-            --glass-border: rgba(240, 255, 218, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --bg-color: #04241d; --text-main: var(--pale-sage);
+            --glass-border: rgba(240, 255, 218, 0.1); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        /* متغيرات ألوان البطاقات (تتكيف مع النمط الليلي) */
         .theme-sage { --card-bg: rgba(240, 255, 218, 0.6); --card-text-color: var(--forest-green); }
         .theme-blush { --card-bg: rgba(250, 199, 255, 0.5); --card-text-color: var(--forest-green); }
         .theme-glass { --card-bg: rgba(255, 255, 255, 0.6); --card-text-color: var(--forest-green); }
@@ -39,38 +28,20 @@
         [data-theme="dark"] .theme-glass { --card-bg: rgba(255, 255, 255, 0.1); --card-text-color: #ffffff; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        
-        body { 
-            background-color: var(--bg-color); color: var(--text-main); 
-            height: 100vh; display: flex; flex-direction: column; 
-            overflow: hidden; position: relative; 
-        }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
 
-        /* --- خلفية متحركة تفاعلية --- */
         .animated-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 20s infinite ease-in-out alternate; }
         .orb-1 { width: 300px; height: 300px; background: var(--petal-blush); top: -50px; left: -50px; }
         .orb-2 { width: 400px; height: 400px; background: var(--pale-sage); bottom: -100px; right: -50px; animation-delay: -5s; }
         .orb-3 { width: 250px; height: 250px; background: var(--burgundy); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.2; animation-duration: 25s; }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, 50px) scale(1.1); }
-            100% { transform: translate(-40px, 20px) scale(0.9); }
-        }
+        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, 50px) scale(1.1); } 100% { transform: translate(-40px, 20px) scale(0.9); } }
 
-        .glass-panel {
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
-        }
+        .glass-panel { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); }
 
-        header {
-            background: rgba(255,255,255,0.2);
-            display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;
-            z-index: 10; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 10px;
-        }
+        header { background: rgba(255,255,255,0.2); display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; z-index: 10; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 10px; }
         [data-theme="dark"] header { background: rgba(0,0,0,0.2); }
-        
         .icon-btn { background: none; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.8;}
         header h1 { font-size: 1.8rem; font-weight: 900; color: var(--burgundy); margin: 0; letter-spacing: -0.5px; }
         [data-theme="dark"] header h1 { color: var(--petal-blush); }
@@ -78,15 +49,10 @@
         main { flex: 1; overflow-y: auto; padding: 10px 20px 100px 20px; }
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
         
-        /* --- تصميم البطاقة --- */
-        .post-card {
-            border-radius: 24px; padding: 25px; display: flex; flex-direction: column; position: relative;
-            background: var(--card-bg); color: var(--card-text-color);
-            transform: translateY(0); transition: transform 0.3s, box-shadow 0.3s;
-        }
+        .post-card { border-radius: 24px; padding: 25px; display: flex; flex-direction: column; position: relative; background: var(--card-bg); color: var(--card-text-color); transform: translateY(0); transition: transform 0.3s, box-shadow 0.3s; }
         .post-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15); }
         
-        .card-text { font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 1.8; flex: 1; margin-bottom: 20px; word-break: break-word; font-weight: 700; }
+        .card-text { font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 1.8; flex: 1; margin-bottom: 20px; word-break: break-word; font-weight: 700; white-space: pre-wrap; }
         .card-signature { font-size: 0.9rem; font-weight: 900; margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
         .card-actions { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 15px; align-items: center; opacity: 0.8; }
         
@@ -94,47 +60,34 @@
         .action-btn:hover { opacity: 1; transform: scale(1.05); }
         .action-btn.liked { opacity: 1; color: var(--burgundy); }
         [data-theme="dark"] .action-btn.liked { color: var(--petal-blush); }
-        
         .action-btn svg { width: 20px; height: 20px; }
         .delete-btn { color: #e74c3c !important; opacity: 0.8; }
 
-        .bottom-nav {
-            background: rgba(255,255,255,0.3);
-            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px;
-            border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 20;
-        }
+        .bottom-nav { background: rgba(255,255,255,0.3); position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 20; }
         [data-theme="dark"] .bottom-nav { background: rgba(0,0,0,0.3); }
         .nav-item { background: none; border: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: var(--text-main); opacity: 0.5; cursor: pointer; }
         .nav-item.active { opacity: 1; color: var(--burgundy); }
         [data-theme="dark"] .nav-item.active { color: var(--petal-blush); }
         .nav-fab { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--burgundy), var(--forest-green)); color: var(--pale-sage); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(94, 32, 43, 0.4); cursor: pointer; transform: translateY(-15px); border: 3px solid var(--glass-border); }
 
-        /* --- النوافذ المنبثقة --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: var(--bg-color); width: 100%; max-width: 450px; border-radius: 24px; padding: 30px; position: relative; }
-        
         .close-modal { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.05); border-radius: 50%; width: 35px; height: 35px; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .modal-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 25px; color: var(--burgundy); text-align: center; }
         [data-theme="dark"] .modal-title { color: var(--petal-blush); }
-
         .form-input { width: 100%; background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.1); color: var(--text-main); padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1rem; outline: none; }
         textarea.form-input { font-family: 'Amiri', serif; font-size: 1.2rem; resize: none; }
-        
         .options-row { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 25px; justify-content: center; }
         .color-dot { min-width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(0,0,0,0.1); transition: 0.3s; }
         .color-dot.active { transform: scale(1.2); border-color: var(--forest-green); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        
         .submit-btn { width: 100%; background: var(--burgundy); color: var(--pale-sage); border: none; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- الخلفية الحركية -->
     <div class="animated-bg">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+        <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
     </div>
 
     <header class="glass-panel">
@@ -170,7 +123,6 @@
                 <textarea id="textInput" class="form-input" rows="4" placeholder="اكتب السُنة هنا..." required></textarea>
                 
                 <div class="options-row" id="colorPicker">
-                    <!-- تم تغيير الألوان إلى أسماء Themes لتتوافق مع الوضع الليلي -->
                     <div class="color-dot active" style="background: rgba(240, 255, 218, 0.8);" data-theme="theme-sage"></div>
                     <div class="color-dot" style="background: rgba(250, 199, 255, 0.8);" data-theme="theme-blush"></div>
                     <div class="color-dot" style="background: #ffffff;" data-theme="theme-glass"></div>
@@ -196,7 +148,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // بصمة الجهاز
         let deviceId = localStorage.getItem('tathakkar_device');
         if (!deviceId) {
             deviceId = 'dev_' + Math.random().toString(36).substr(2, 9);
@@ -231,18 +182,14 @@
             });
         });
 
-        // قراءة البيانات
         const q = query(collection(db, "sunnahs"), orderBy("timestamp", "desc"));
         onSnapshot(q, (snapshot) => {
             window.allPosts = [];
-            snapshot.forEach((doc) => {
-                window.allPosts.push({ id: doc.id, ...doc.data() });
-            });
+            snapshot.forEach((doc) => { window.allPosts.push({ id: doc.id, ...doc.data() }); });
             if(currentView === 'home') renderPosts(window.allPosts);
             else renderLeaderboard(window.allPosts);
         });
 
-        // إضافة منشور جديد
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -252,7 +199,7 @@
                 await addDoc(collection(db, "sunnahs"), {
                     author: document.getElementById('authorInput').value,
                     text: document.getElementById('textInput').value,
-                    themeName: selectedTheme, // حفظ اسم الستايل بدل اللون المباشر
+                    themeName: selectedTheme,
                     likedBy: [], 
                     ownerId: deviceId, 
                     timestamp: Date.now()
@@ -265,19 +212,11 @@
             btn.innerText = "نشر السُنة"; btn.disabled = false;
         });
 
-        // حل مشكلة الإعجابات (التحديث المباشر من المصفوفة)
-        window.toggleLike = async (id) => {
-            const post = window.allPosts.find(p => p.id === id);
-            if (!post) return;
-
+        // تم الاستغناء عن تمرير البيانات في HTML واستبدالها بالـ ID فقط لمنع كسر الأكواد
+        window.toggleLike = async (id, hasLiked) => {
             const postRef = doc(db, "sunnahs", id);
-            const hasLiked = post.likedBy && post.likedBy.includes(deviceId);
-            
-            if (hasLiked) {
-                await updateDoc(postRef, { likedBy: arrayRemove(deviceId) });
-            } else {
-                await updateDoc(postRef, { likedBy: arrayUnion(deviceId) });
-            }
+            if (hasLiked) await updateDoc(postRef, { likedBy: arrayRemove(deviceId) });
+            else await updateDoc(postRef, { likedBy: arrayUnion(deviceId) });
         };
 
         window.deletePost = async (id) => {
@@ -286,47 +225,47 @@
             }
         };
 
-        window.sharePost = (text, author) => {
-            if (navigator.share) navigator.share({ title: 'سُنة مهجورة', text: `${text} \n- ${author} \nتَذَكَّر`});
+        window.sharePost = (id) => {
+            const post = window.allPosts.find(p => p.id === id);
+            if (!post) return;
+            if (navigator.share) navigator.share({ title: 'سُنة مهجورة', text: `${post.text} \n- ${post.author} \nتَذَكَّر`});
             else alert('تم النسخ!');
         };
 
-        // حل مشكلة حفظ الصورة (إنشاء نسخة صلبة مخفية في الخلفية للتصوير)
-        window.saveAsImage = async (btn, author) => {
-            const originalCard = btn.closest('.post-card');
+        // تم التعديل على خاصية الحفظ لتعمل بشكل حي ومباشر على الشاشة بدون إنشاء نسخة مخفية تسبب مشاكل بالمتصفحات
+        window.saveAsImage = async (btn, id) => {
+            const post = window.allPosts.find(p => p.id === id);
+            if (!post) return;
             
-            // إنشاء بطاقة وهمية للتصوير لضمان عدم وجود شفافية تفسد الصورة
-            const clone = originalCard.cloneNode(true);
-            clone.querySelector('.card-actions').remove(); // إزالة الأزرار
+            const card = btn.closest('.post-card');
+            const actions = card.querySelector('.card-actions');
+            const originalBg = card.style.background;
             
-            // إضافة التوقيع
+            // إخفاء الأزرار ووضع ألوان صلبة مؤقتة للتصوير
+            actions.style.display = 'none';
+            if(card.classList.contains('theme-blush')) card.style.background = '#FEE8FF';
+            else if(card.classList.contains('theme-glass')) card.style.background = '#FFFFFF';
+            else card.style.background = '#F5FFEA';
+
+            // إضافة الختم
             const watermark = document.createElement('div');
+            watermark.id = 'temp-watermark';
             watermark.innerHTML = '<div style="text-align:center; margin-top:15px; padding-top:15px; border-top:1px dashed #073B2F; font-size:1rem; font-weight:900; color:#073B2F; opacity:0.8;">نُشر عبر منصة تَذَكَّر 🌿</div>';
-            clone.appendChild(watermark);
-
-            // فرض ألوان صلبة ثابتة للصورة بناءً على الستايل
-            clone.style.position = 'absolute';
-            clone.style.left = '-9999px'; // إخفاء البطاقة الوهمية
-            clone.style.width = '400px';
-            clone.style.borderRadius = '0'; // لجعل الصورة مربعة/مستطيلة مثالية
-            clone.style.color = '#073B2F'; // لون النص دائماً داكن في الصورة
-            
-            if(clone.classList.contains('theme-blush')) clone.style.background = '#FEE8FF';
-            else if(clone.classList.contains('theme-glass')) clone.style.background = '#FFFFFF';
-            else clone.style.background = '#F5FFEA';
-
-            document.body.appendChild(clone);
+            card.appendChild(watermark);
 
             try {
-                const canvas = await html2canvas(clone, { scale: 3, useCORS: true });
+                const canvas = await html2canvas(card, { scale: 3, backgroundColor: card.style.background, useCORS: true });
                 const link = document.createElement('a');
-                link.download = `sunnah_${author}.png`;
+                link.download = `sunnah_${post.author}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (err) {
                 alert('حدث خطأ أثناء حفظ الصورة.');
             } finally {
-                clone.remove(); // تنظيف الصفحة
+                // إعادة البطاقة لشكلها الطبيعي
+                document.getElementById('temp-watermark')?.remove();
+                actions.style.display = 'flex';
+                card.style.background = originalBg;
             }
         };
 
@@ -335,7 +274,7 @@
             container.innerHTML = posts.length === 0 ? '<p style="text-align:center; margin-top:50px; opacity:0.6;">لا توجد مشاركات بعد..</p>' : '';
             
             posts.forEach(post => {
-                const themeClass = post.themeName || 'theme-sage'; // توافق مع المنشورات القديمة
+                const themeClass = post.themeName || 'theme-sage';
                 const card = document.createElement('div');
                 card.className = `post-card glass-panel ${themeClass}`;
 
@@ -344,25 +283,23 @@
                 const hasLiked = likesArray.includes(deviceId);
                 const isOwner = post.ownerId === deviceId; 
 
-                const safeText = post.text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                const safeAuthor = post.author.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-
+                // تمرير الـ ID فقط للأزرار يحمي الكود من الكسر عند وجود مسافات بالنص
                 card.innerHTML = `
-                    <div class="card-text">${post.text}</div>
+                    <div class="card-text">${post.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
                     <div class="card-signature">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        ${post.author}
+                        ${post.author.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
                     </div>
                     <div class="card-actions">
                         <div style="display: flex; gap: 12px;">
-                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')" title="إعجاب">
+                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${hasLiked})" title="إعجاب">
                                 <svg viewBox="0 0 24 24" fill="${hasLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                                 ${likeCount}
                             </button>
-                            <button class="action-btn" onclick="saveAsImage(this, '${safeAuthor}')" title="حفظ كصورة">
+                            <button class="action-btn" onclick="saveAsImage(this, '${post.id}')" title="حفظ كصورة">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             </button>
-                            <button class="action-btn" onclick="sharePost('${safeText}', '${safeAuthor}')" title="مشاركة">
+                            <button class="action-btn" onclick="sharePost('${post.id}')" title="مشاركة">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                             </button>
                         </div>
@@ -392,8 +329,8 @@
                 
                 div.innerHTML = `
                     <div>
-                        <strong style="font-size:1.1rem; color:var(--text-main);">#${index+1} ${post.author}</strong> 
-                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--text-main);">${post.text.substring(0,40)}...</span>
+                        <strong style="font-size:1.1rem; color:var(--text-main);">#${index+1} ${post.author.replace(/</g, "&lt;")}</strong> 
+                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--text-main);">${post.text.substring(0,40).replace(/</g, "&lt;")}...</span>
                     </div> 
                     <div style="color:var(--burgundy); font-weight:900; font-size:1.2rem; display:flex; align-items:center; gap:5px;">
                         <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 
