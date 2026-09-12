@@ -45,7 +45,6 @@
             overflow: hidden; position: relative; 
         }
 
-        /* خلفية متحركة تفاعلية */
         .animated-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 20s infinite ease-in-out alternate; }
         .orb-1 { width: 300px; height: 300px; background: var(--petal-blush); top: -50px; left: -50px; }
@@ -77,7 +76,6 @@
         main { flex: 1; overflow-y: auto; padding: 10px 20px 100px 20px; }
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
         
-        /* تصميم البطاقة */
         .post-card {
             border-radius: 24px; padding: 25px; display: flex; flex-direction: column; position: relative;
             background: var(--card-bg); color: var(--card-text-color);
@@ -89,7 +87,7 @@
         .card-signature { font-size: 0.9rem; font-weight: 900; margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
         .card-actions { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 15px; align-items: center; opacity: 0.8; flex-wrap: wrap; gap: 8px; }
         
-        .action-btn { background: none; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: currentColor; opacity: 0.7; }
+        .action-btn { background: none; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: currentColor; opacity: 0.7; transition: all 0.2s; }
         .action-btn:hover { opacity: 1; transform: scale(1.05); }
         .action-btn.liked { opacity: 1; color: var(--burgundy); }
         [data-theme="dark"] .action-btn.liked { color: var(--petal-blush); }
@@ -108,7 +106,6 @@
         [data-theme="dark"] .nav-item.active { color: var(--petal-blush); }
         .nav-fab { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--burgundy), var(--forest-green)); color: var(--pale-sage); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(94, 32, 43, 0.4); cursor: pointer; transform: translateY(-15px); border: 3px solid var(--glass-border); }
 
-        /* النوافذ المنبثقة */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: var(--bg-color); width: 100%; max-width: 450px; border-radius: 24px; padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; }
@@ -127,20 +124,21 @@
         .submit-btn { width: 100%; background: var(--burgundy); color: var(--pale-sage); border: none; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* مؤشر التحميل */
         .loading-spinner { display: none; text-align: center; margin: 50px 0; }
         .loading-spinner.active { display: block; }
         .spinner { border: 4px solid rgba(7, 59, 47, 0.1); border-top: 4px solid var(--burgundy); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* رسالة الخطأ */
         .error-message { color: #e74c3c; text-align: center; padding: 15px; margin-bottom: 15px; background: rgba(231, 76, 60, 0.1); border-radius: 10px; display: none; }
         .error-message.active { display: block; }
+        
+        /* توستر رسالة النجاح */
+        .toast { position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 12px; background: #27ae60; color: white; font-weight: 600; z-index: 1000; animation: slideIn 0.3s; max-width: 300px; }
+        @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- الخلفية الحركية -->
     <div class="animated-bg">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -197,7 +195,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // ⚠️ تحذير أمني: في بيئة الإنتاج، استخدم Firebase Security Rules و environment variables
         const firebaseConfig = {
             apiKey: "AIzaSyDSLuKFb3DDzXhzLRhkDvK24UKJSxGy4kY",
             authDomain: "tathakkar.firebaseapp.com",
@@ -219,12 +216,21 @@
         let selectedTheme = 'theme-sage';
         window.allPosts = [];
         let currentView = 'home';
+        let isUpdatingLike = false; // منع النقرات المتعددة
 
-        // تحسين: معالجة آمنة للـ HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function showToast(message, isSuccess = true) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toast.style.background = isSuccess ? '#27ae60' : '#e74c3c';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
         window.openModal = (id) => {
@@ -242,7 +248,8 @@
         window.switchView = (event, view) => {
             currentView = view;
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('button').classList.add('active');
+            const targetBtn = event.target.closest('button');
+            if (targetBtn) targetBtn.classList.add('active');
             
             if(view === 'home') renderPosts(window.allPosts);
             if(view === 'leaderboard') renderLeaderboard(window.allPosts);
@@ -255,7 +262,6 @@
             localStorage.setItem('tathakkar_theme', newTheme);
         };
 
-        // تحميل النمط المحفوظ
         const savedTheme = localStorage.getItem('tathakkar_theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
 
@@ -267,7 +273,6 @@
             });
         });
 
-        // قراءة البيانات مع معالجة الأخطاء
         const q = query(collection(db, "sunnahs"), orderBy("timestamp", "desc"));
         onSnapshot(q, (snapshot) => {
             window.allPosts = [];
@@ -306,7 +311,7 @@
                     timestamp: Date.now()
                 });
                 window.closeModal('addModal');
-                showError(''); // إخفاء رسائل الخطأ
+                showToast('تم نشر السُنة بنجاح! ✨');
             } catch (error) {
                 console.error('خطأ:', error);
                 showError('حدث خطأ في النشر. حاول مجدداً.');
@@ -316,14 +321,30 @@
             }
         });
 
+        // ✅ إصلاح مشكلة الإعجاب - تحديث فوري + منع النقرات المتعددة
         window.toggleLike = async (id) => {
+            if (isUpdatingLike) return; // منع النقرات المتعددة
+            
             const post = window.allPosts.find(p => p.id === id);
             if (!post) return;
 
+            isUpdatingLike = true;
             const postRef = doc(db, "sunnahs", id);
             const hasLiked = post.likedBy && post.likedBy.includes(deviceId);
             
             try {
+                // تحديث فوري في الواجهة
+                const likeBtn = document.querySelector(`[data-post-id="${id}"] .action-btn[data-like-btn]`);
+                if (likeBtn) {
+                    likeBtn.classList.toggle('liked');
+                    const count = likeBtn.querySelector('span:last-child');
+                    if (count) {
+                        const currentCount = parseInt(count.textContent) || 0;
+                        count.textContent = hasLiked ? currentCount - 1 : currentCount + 1;
+                    }
+                }
+
+                // تحديث Firebase بدون انتظار الاستجابة الكاملة
                 if (hasLiked) {
                     await updateDoc(postRef, { likedBy: arrayRemove(deviceId) });
                 } else {
@@ -332,6 +353,10 @@
             } catch (error) {
                 console.error('خطأ في تحديث الإعجاب:', error);
                 showError('حدث خطأ في تحديث الإعجاب.');
+                // إعادة تحميل البيانات عند حدوث خطأ
+                renderPosts(window.allPosts);
+            } finally {
+                isUpdatingLike = false;
             }
         };
 
@@ -339,6 +364,7 @@
             if (confirm("هل أنت متأكد من حذف هذه السُنة نهائياً؟")) {
                 try {
                     await deleteDoc(doc(db, "sunnahs", id));
+                    showToast('تم حذف المنشور بنجاح');
                 } catch (error) {
                     console.error('خطأ في الحذف:', error);
                     showError('حدث خطأ في حذف المنشور.');
@@ -353,55 +379,81 @@
                     text: `${text}\n- ${author}` 
                 }).catch(err => console.log('خطأ في المشاركة:', err));
             } else {
-                // بديل إذا لم يكن الجهاز يدعم Web Share API
-                const textToCopy = `${text}\n- ${author}\nتَذَكَّر`;
+                const textToCopy = `${text}\n- ${author}`;
                 navigator.clipboard.writeText(textToCopy).then(() => {
-                    showError('تم نسخ المنشور إلى الحافظة!', true);
+                    showToast('تم نسخ المنشور إلى الحافظة!');
                 }).catch(() => alert('تعذر نسخ المنشور'));
             }
         };
 
+        // ✅ إصلاح مشكلة حفظ الصور - استخدام canvas مباشرة + تحسين الأداء
         window.saveAsImage = async (btn, postId) => {
             try {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
                 const originalCard = document.querySelector(`[data-post-id="${postId}"]`);
-                if (!originalCard) return;
+                
+                if (!originalCard) {
+                    showError('لم يتم العثور على البطاقة');
+                    return;
+                }
 
+                // إنشاء نسخة للتصوير
                 const clone = originalCard.cloneNode(true);
                 clone.querySelector('.card-actions').remove();
                 
+                // إضافة الماء مارك
                 const watermark = document.createElement('div');
-                watermark.innerHTML = '<div style="text-align:center; margin-top:15px; padding-top:15px; border-top:1px dashed #073B2F; font-size:1rem; font-weight:900; color:#073B2F; opacity:0.8;">نُشر عبر منصة تَذَكَّر</div>';
+                watermark.style.cssText = 'text-align:center;margin-top:15px;padding-top:15px;border-top:1px dashed #073B2F;font-size:1rem;font-weight:900;color:#073B2F;opacity:0.8;';
+                watermark.innerHTML = 'نُشر عبر منصة تَذَكَّر 🌿';
                 clone.appendChild(watermark);
 
-                clone.style.position = 'absolute';
-                clone.style.left = '-9999px';
-                clone.style.width = '400px';
-                clone.style.borderRadius = '0';
-                clone.style.color = '#073B2F';
+                // تخطيط النسخة المخفية
+                clone.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:400px;color:#073B2F;border-radius:0;z-index:-1;';
                 
-                if(clone.classList.contains('theme-blush')) clone.style.background = '#FEE8FF';
-                else if(clone.classList.contains('theme-glass')) clone.style.background = '#FFFFFF';
-                else clone.style.background = '#F5FFEA';
+                // تعيين اللون بناءً على الثيم
+                if(clone.classList.contains('theme-blush')) {
+                    clone.style.background = '#FEE8FF';
+                } else if(clone.classList.contains('theme-glass')) {
+                    clone.style.background = '#FFFFFF';
+                } else {
+                    clone.style.background = '#F5FFEA';
+                }
 
                 document.body.appendChild(clone);
 
+                // انتظر قليلاً حتى يتم رسم الـ DOM
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // تصوير الصورة
                 const canvas = await html2canvas(clone, { 
                     scale: 2, 
                     useCORS: true,
                     logging: false,
-                    imageTimeout: 2000
+                    imageTimeout: 5000,
+                    backgroundColor: null,
+                    allowTaint: true
                 });
-                
+
+                // إنشاء رابط التنزيل
                 const link = document.createElement('a');
                 link.download = `sunnah_${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+                link.href = canvas.toDataURL('image/png', 1.0);
                 
+                // محاكاة النقر على الرابط
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // تنظيف
                 clone.remove();
-                showError('تم حفظ الصورة بنجاح!', true);
+                showToast('تم حفظ الصورة بنجاح! 📸');
             } catch (err) {
                 console.error('خطأ في حفظ الصورة:', err);
-                showError('حدث خطأ أثناء حفظ الصورة.');
+                showError('حدث خطأ أثناء حفظ الصورة. تأكد من توفر مساحة وصلاحيات.');
+            } finally {
+                btn.disabled = false;
+                btn.style.opacity = '0.7';
             }
         };
 
@@ -423,7 +475,7 @@
             container.innerHTML = '';
             
             if (posts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; margin-top:50px; opacity:0.6; grid-column:1/-1;">لا توجد مشاركات بعد..</p>';
+                container.innerHTML = '<p style="text-align:center;margin-top:50px;opacity:0.6;grid-column:1/-1;">لا توجد مشاركات بعد..</p>';
                 return;
             }
             
@@ -449,9 +501,9 @@
                     </div>
                     <div class="card-actions">
                         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="window.toggleLike('${post.id}')" title="إعجاب">
+                            <button class="action-btn ${hasLiked ? 'liked' : ''}" data-like-btn onclick="window.toggleLike('${post.id}')" title="إعجاب">
                                 <svg viewBox="0 0 24 24" fill="${hasLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                                ${likeCount}
+                                <span>${likeCount}</span>
                             </button>
                             <button class="action-btn" onclick="window.saveAsImage(this, '${post.id}')" title="حفظ كصورة">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -476,29 +528,29 @@
             const sorted = [...posts].sort((a, b) => (b.likedBy?.length || 0) - (a.likedBy?.length || 0)).slice(0, 10);
             
             if (sorted.length === 0) {
-                container.innerHTML = '<p style="text-align:center; margin-top:50px; opacity:0.6; grid-column:1/-1;">لا توجد مشاركات بعد..</p>';
+                container.innerHTML = '<p style="text-align:center;margin-top:50px;opacity:0.6;grid-column:1/-1;">لا توجد مشاركات بعد..</p>';
                 return;
             }
             
             const title = document.createElement('h2');
-            title.style = 'text-align:center; margin-bottom:25px; color:var(--burgundy); grid-column:1/-1;';
+            title.style = 'text-align:center;margin-bottom:25px;color:var(--burgundy);grid-column:1/-1;';
             title.textContent = 'المتصدرين';
             container.appendChild(title);
             
             sorted.forEach((post, index) => {
                 const div = document.createElement('div');
                 div.className = 'glass-panel';
-                div.style = 'padding:15px 20px; border-radius:16px; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.1); grid-column:1/-1;';
+                div.style = 'padding:15px 20px;border-radius:16px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.1);grid-column:1/-1;';
                 
                 const likeCount = post.likedBy?.length || 0;
                 const preview = escapeHtml(post.text).substring(0, 40);
                 
                 div.innerHTML = `
                     <div>
-                        <strong style="font-size:1.1rem; color:var(--text-main);">#${index+1} ${escapeHtml(post.author)}</strong> 
-                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--text-main);">${preview}...</span>
+                        <strong style="font-size:1.1rem;color:var(--text-main);">#${index+1} ${escapeHtml(post.author)}</strong> 
+                        <span style="font-size:0.9rem;opacity:0.7;display:block;margin-top:5px;color:var(--text-main);">${preview}...</span>
                     </div> 
-                    <div style="color:var(--burgundy); font-weight:900; font-size:1.2rem; display:flex; align-items:center; gap:5px;">
+                    <div style="color:var(--burgundy);font-weight:900;font-size:1.2rem;display:flex;align-items:center;gap:5px;">
                         <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 
                         ${likeCount}
                     </div>
