@@ -6,7 +6,7 @@
     <title>تَذَكَّر | المبادرة المدرسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
     
-    <!-- استدعاء مكتبة حفظ الصور -->
+    <!-- مكتبة حفظ الصور -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
@@ -18,7 +18,6 @@
 
             --bg-color: #e9f2e3;
             --text-main: var(--forest-green);
-            --glass-bg: rgba(255, 255, 255, 0.25);
             --glass-border: rgba(255, 255, 255, 0.4);
             --glass-shadow: 0 8px 32px 0 rgba(7, 59, 47, 0.1);
         }
@@ -26,12 +25,20 @@
         [data-theme="dark"] {
             --bg-color: #04241d;
             --text-main: var(--pale-sage);
-            --glass-bg: rgba(7, 59, 47, 0.4);
             --glass-border: rgba(240, 255, 218, 0.1);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; transition: all 0.3s ease; }
+        /* متغيرات ألوان البطاقات (تتكيف مع النمط الليلي) */
+        .theme-sage { --card-bg: rgba(240, 255, 218, 0.6); --card-text-color: var(--forest-green); }
+        .theme-blush { --card-bg: rgba(250, 199, 255, 0.5); --card-text-color: var(--forest-green); }
+        .theme-glass { --card-bg: rgba(255, 255, 255, 0.6); --card-text-color: var(--forest-green); }
+
+        [data-theme="dark"] .theme-sage { --card-bg: rgba(240, 255, 218, 0.15); --card-text-color: var(--pale-sage); }
+        [data-theme="dark"] .theme-blush { --card-bg: rgba(250, 199, 255, 0.15); --card-text-color: var(--petal-blush); }
+        [data-theme="dark"] .theme-glass { --card-bg: rgba(255, 255, 255, 0.1); --card-text-color: #ffffff; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; transition: background-color 0.3s, color 0.3s; }
         
         body { 
             background-color: var(--bg-color); color: var(--text-main); 
@@ -53,68 +60,72 @@
         }
 
         .glass-panel {
-            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
         }
 
         header {
+            background: rgba(255,255,255,0.2);
             display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;
             z-index: 10; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 10px;
         }
+        [data-theme="dark"] header { background: rgba(0,0,0,0.2); }
+        
         .icon-btn { background: none; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.8;}
-        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
         header h1 { font-size: 1.8rem; font-weight: 900; color: var(--burgundy); margin: 0; letter-spacing: -0.5px; }
         [data-theme="dark"] header h1 { color: var(--petal-blush); }
 
         main { flex: 1; overflow-y: auto; padding: 10px 20px 100px 20px; }
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
         
+        /* --- تصميم البطاقة --- */
         .post-card {
             border-radius: 24px; padding: 25px; display: flex; flex-direction: column; position: relative;
+            background: var(--card-bg); color: var(--card-text-color);
             transform: translateY(0); transition: transform 0.3s, box-shadow 0.3s;
         }
-        .post-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15); }
+        .post-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15); }
         
-        .card-text { font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 1.8; flex: 1; margin-bottom: 20px; word-break: break-word; font-weight: 700; color: var(--forest-green); }
-        .card-signature { font-size: 0.9rem; font-weight: 900; margin-bottom: 15px; opacity: 0.8; color: var(--forest-green); display: flex; align-items: center; gap: 8px; }
-        .card-actions { display: flex; justify-content: space-between; border-top: 1px solid rgba(7, 59, 47, 0.1); padding-top: 15px; align-items: center; }
+        .card-text { font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 1.8; flex: 1; margin-bottom: 20px; word-break: break-word; font-weight: 700; }
+        .card-signature { font-size: 0.9rem; font-weight: 900; margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
+        .card-actions { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 15px; align-items: center; opacity: 0.8; }
         
-        .action-btn { background: none; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--forest-green); opacity: 0.7; }
+        .action-btn { background: none; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: currentColor; opacity: 0.7; }
         .action-btn:hover { opacity: 1; transform: scale(1.05); }
         .action-btn.liked { opacity: 1; color: var(--burgundy); }
+        [data-theme="dark"] .action-btn.liked { color: var(--petal-blush); }
+        
         .action-btn svg { width: 20px; height: 20px; }
-        .delete-btn { color: #c0392b; opacity: 0.6; }
-        .delete-btn:hover { opacity: 1; color: #e74c3c; }
+        .delete-btn { color: #e74c3c !important; opacity: 0.8; }
 
         .bottom-nav {
+            background: rgba(255,255,255,0.3);
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px;
             border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 20;
         }
+        [data-theme="dark"] .bottom-nav { background: rgba(0,0,0,0.3); }
         .nav-item { background: none; border: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: var(--text-main); opacity: 0.5; cursor: pointer; }
         .nav-item.active { opacity: 1; color: var(--burgundy); }
         [data-theme="dark"] .nav-item.active { color: var(--petal-blush); }
         .nav-fab { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--burgundy), var(--forest-green)); color: var(--pale-sage); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(94, 32, 43, 0.4); cursor: pointer; transform: translateY(-15px); border: 3px solid var(--glass-border); }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; opacity: 0; transition: opacity 0.3s; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { width: 100%; max-width: 450px; border-radius: 24px; padding: 30px; position: relative; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .modal-overlay.active .modal-content { transform: scale(1); }
+        /* --- النوافذ المنبثقة --- */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-color); width: 100%; max-width: 450px; border-radius: 24px; padding: 30px; position: relative; }
         
         .close-modal { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.05); border-radius: 50%; width: 35px; height: 35px; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .modal-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 25px; color: var(--burgundy); text-align: center; }
         [data-theme="dark"] .modal-title { color: var(--petal-blush); }
 
-        .form-input { width: 100%; background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.1); color: #000; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1rem; outline: none; transition: 0.3s; }
-        .form-input:focus { background: rgba(255,255,255,0.7); box-shadow: 0 0 0 2px var(--burgundy); }
+        .form-input { width: 100%; background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.1); color: var(--text-main); padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1rem; outline: none; }
         textarea.form-input { font-family: 'Amiri', serif; font-size: 1.2rem; resize: none; }
         
         .options-row { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 25px; justify-content: center; }
         .color-dot { min-width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(0,0,0,0.1); transition: 0.3s; }
         .color-dot.active { transform: scale(1.2); border-color: var(--forest-green); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         
-        .submit-btn { width: 100%; background: var(--burgundy); color: var(--pale-sage); border: none; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(94, 32, 43, 0.3); }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(94, 32, 43, 0.4); }
-
+        .submit-btn { width: 100%; background: var(--burgundy); color: var(--pale-sage); border: none; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
     </style>
 </head>
 <body data-theme="light">
@@ -159,9 +170,10 @@
                 <textarea id="textInput" class="form-input" rows="4" placeholder="اكتب السُنة هنا..." required></textarea>
                 
                 <div class="options-row" id="colorPicker">
-                    <div class="color-dot active" style="background: rgba(240, 255, 218, 0.6);" data-color="rgba(240, 255, 218, 0.6)"></div>
-                    <div class="color-dot" style="background: rgba(250, 199, 255, 0.5);" data-color="rgba(250, 199, 255, 0.5)"></div>
-                    <div class="color-dot" style="background: rgba(255, 255, 255, 0.5);" data-color="rgba(255, 255, 255, 0.5)"></div>
+                    <!-- تم تغيير الألوان إلى أسماء Themes لتتوافق مع الوضع الليلي -->
+                    <div class="color-dot active" style="background: rgba(240, 255, 218, 0.8);" data-theme="theme-sage"></div>
+                    <div class="color-dot" style="background: rgba(250, 199, 255, 0.8);" data-theme="theme-blush"></div>
+                    <div class="color-dot" style="background: #ffffff;" data-theme="theme-glass"></div>
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">نشر السُنة</button>
             </form>
@@ -172,29 +184,27 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // مفاتيح مشروعك المدمجة
         const firebaseConfig = {
             apiKey: "AIzaSyDSLuKFb3DDzXhzLRhkDvK24UKJSxGy4kY",
             authDomain: "tathakkar.firebaseapp.com",
             projectId: "tathakkar",
             storageBucket: "tathakkar.firebasestorage.app",
             messagingSenderId: "519113054003",
-            appId: "1:519113054003:web:331ce2e58585e985ed9046",
-            measurementId: "G-F50CMVT0JP"
+            appId: "1:519113054003:web:331ce2e58585e985ed9046"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // بصمة الجهاز للحفاظ على الإعجابات وتصريح الحذف
+        // بصمة الجهاز
         let deviceId = localStorage.getItem('tathakkar_device');
         if (!deviceId) {
             deviceId = 'dev_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('tathakkar_device', deviceId);
         }
 
-        let selectedColor = 'rgba(240, 255, 218, 0.6)';
-        let allPosts = [];
+        let selectedTheme = 'theme-sage';
+        window.allPosts = [];
         let currentView = 'home';
 
         window.openModal = (id) => document.getElementById(id).classList.add('active');
@@ -204,8 +214,8 @@
             currentView = view;
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            if(view === 'home') renderPosts(allPosts);
-            if(view === 'leaderboard') renderLeaderboard(allPosts);
+            if(view === 'home') renderPosts(window.allPosts);
+            if(view === 'leaderboard') renderLeaderboard(window.allPosts);
         };
 
         window.toggleTheme = () => {
@@ -217,20 +227,22 @@
             dot.addEventListener('click', function() {
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
                 this.classList.add('active');
-                selectedColor = this.getAttribute('data-color');
+                selectedTheme = this.getAttribute('data-theme');
             });
         });
 
+        // قراءة البيانات
         const q = query(collection(db, "sunnahs"), orderBy("timestamp", "desc"));
         onSnapshot(q, (snapshot) => {
-            allPosts = [];
+            window.allPosts = [];
             snapshot.forEach((doc) => {
-                allPosts.push({ id: doc.id, ...doc.data() });
+                window.allPosts.push({ id: doc.id, ...doc.data() });
             });
-            if(currentView === 'home') renderPosts(allPosts);
-            else renderLeaderboard(allPosts);
+            if(currentView === 'home') renderPosts(window.allPosts);
+            else renderLeaderboard(window.allPosts);
         });
 
+        // إضافة منشور جديد
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -240,7 +252,7 @@
                 await addDoc(collection(db, "sunnahs"), {
                     author: document.getElementById('authorInput').value,
                     text: document.getElementById('textInput').value,
-                    color: selectedColor,
+                    themeName: selectedTheme, // حفظ اسم الستايل بدل اللون المباشر
                     likedBy: [], 
                     ownerId: deviceId, 
                     timestamp: Date.now()
@@ -253,9 +265,14 @@
             btn.innerText = "نشر السُنة"; btn.disabled = false;
         });
 
-        window.toggleLike = async (id, currentLikes) => {
+        // حل مشكلة الإعجابات (التحديث المباشر من المصفوفة)
+        window.toggleLike = async (id) => {
+            const post = window.allPosts.find(p => p.id === id);
+            if (!post) return;
+
             const postRef = doc(db, "sunnahs", id);
-            const hasLiked = currentLikes && currentLikes.includes(deviceId);
+            const hasLiked = post.likedBy && post.likedBy.includes(deviceId);
+            
             if (hasLiked) {
                 await updateDoc(postRef, { likedBy: arrayRemove(deviceId) });
             } else {
@@ -274,40 +291,43 @@
             else alert('تم النسخ!');
         };
 
-        // دالة حفظ المنشور كصورة منسقة
+        // حل مشكلة حفظ الصورة (إنشاء نسخة صلبة مخفية في الخلفية للتصوير)
         window.saveAsImage = async (btn, author) => {
-            const card = btn.closest('.post-card');
-            const actions = card.querySelector('.card-actions');
-            const originalBg = card.style.background;
+            const originalCard = btn.closest('.post-card');
             
-            // تحويل لون الزجاج إلى لون صلب لضمان وضوح الصورة عند تحميلها
-            let solidBg = '#F0FFDA'; // أخضر فاتح
-            if(originalBg.includes('250, 199, 255')) solidBg = '#FAC7FF'; // زهري
-            if(originalBg.includes('255, 255, 255')) solidBg = '#FFFFFF'; // أبيض
-
-            // إخفاء الأزرار وإضافة توقيع الموقع للصورة
-            actions.style.display = 'none';
-            card.style.background = solidBg;
+            // إنشاء بطاقة وهمية للتصوير لضمان عدم وجود شفافية تفسد الصورة
+            const clone = originalCard.cloneNode(true);
+            clone.querySelector('.card-actions').remove(); // إزالة الأزرار
             
+            // إضافة التوقيع
             const watermark = document.createElement('div');
-            watermark.innerHTML = '<div style="text-align:center; margin-top:20px; padding-top:15px; border-top:1px dashed rgba(7, 59, 47, 0.2); font-size:1rem; font-weight:900; color:var(--forest-green);">نُشر عبر منصة تَذَكَّر 🌿</div>';
-            card.appendChild(watermark);
+            watermark.innerHTML = '<div style="text-align:center; margin-top:15px; padding-top:15px; border-top:1px dashed #073B2F; font-size:1rem; font-weight:900; color:#073B2F; opacity:0.8;">نُشر عبر منصة تَذَكَّر 🌿</div>';
+            clone.appendChild(watermark);
+
+            // فرض ألوان صلبة ثابتة للصورة بناءً على الستايل
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px'; // إخفاء البطاقة الوهمية
+            clone.style.width = '400px';
+            clone.style.borderRadius = '0'; // لجعل الصورة مربعة/مستطيلة مثالية
+            clone.style.color = '#073B2F'; // لون النص دائماً داكن في الصورة
+            
+            if(clone.classList.contains('theme-blush')) clone.style.background = '#FEE8FF';
+            else if(clone.classList.contains('theme-glass')) clone.style.background = '#FFFFFF';
+            else clone.style.background = '#F5FFEA';
+
+            document.body.appendChild(clone);
 
             try {
-                const canvas = await html2canvas(card, { scale: 3, backgroundColor: null });
+                const canvas = await html2canvas(clone, { scale: 3, useCORS: true });
                 const link = document.createElement('a');
-                link.download = `سنة_مهجورة_${author}.png`;
+                link.download = `sunnah_${author}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (err) {
-                console.error(err);
                 alert('حدث خطأ أثناء حفظ الصورة.');
+            } finally {
+                clone.remove(); // تنظيف الصفحة
             }
-
-            // إعادة البطاقة لشكلها الزجاجي الأصلي
-            watermark.remove();
-            actions.style.display = 'flex';
-            card.style.background = originalBg;
         };
 
         function renderPosts(posts) {
@@ -315,9 +335,9 @@
             container.innerHTML = posts.length === 0 ? '<p style="text-align:center; margin-top:50px; opacity:0.6;">لا توجد مشاركات بعد..</p>' : '';
             
             posts.forEach(post => {
+                const themeClass = post.themeName || 'theme-sage'; // توافق مع المنشورات القديمة
                 const card = document.createElement('div');
-                card.className = 'post-card glass-panel';
-                card.style.background = post.color;
+                card.className = `post-card glass-panel ${themeClass}`;
 
                 const likesArray = post.likedBy || [];
                 const likeCount = likesArray.length;
@@ -335,7 +355,7 @@
                     </div>
                     <div class="card-actions">
                         <div style="display: flex; gap: 12px;">
-                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', [${likesArray.map(id => `'${id}'`).join(',')}])" title="إعجاب">
+                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')" title="إعجاب">
                                 <svg viewBox="0 0 24 24" fill="${hasLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                                 ${likeCount}
                             </button>
@@ -366,14 +386,14 @@
             sorted.forEach((post, index) => {
                 const div = document.createElement('div');
                 div.className = 'glass-panel';
-                div.style = 'padding:15px 20px; border-radius:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;';
+                div.style = 'padding:15px 20px; border-radius:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.1);';
                 
                 const likeCount = post.likedBy?.length || 0;
                 
                 div.innerHTML = `
                     <div>
-                        <strong style="font-size:1.1rem; color:var(--forest-green);">#${index+1} ${post.author}</strong> 
-                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--forest-green);">${post.text.substring(0,40)}...</span>
+                        <strong style="font-size:1.1rem; color:var(--text-main);">#${index+1} ${post.author}</strong> 
+                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--text-main);">${post.text.substring(0,40)}...</span>
                     </div> 
                     <div style="color:var(--burgundy); font-weight:900; font-size:1.2rem; display:flex; align-items:center; gap:5px;">
                         <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 
