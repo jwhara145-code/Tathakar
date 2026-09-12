@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تَذَكَّر | Tathakkar</title>
+    <title>تَذَكَّر</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* الألوان الجديدة المعتمدة */
             --forest-green: #073B2F;
             --burgundy: #5E202B;
             --pale-sage: #F0FFDA;
             --petal-blush: #FAC7FF;
 
-            /* توظيف الألوان للنمط الفاتح */
             --bg-color: var(--pale-sage);
             --text-main: var(--forest-green);
             --text-muted: rgba(7, 59, 47, 0.7);
@@ -26,7 +24,6 @@
         }
 
         [data-theme="dark"] {
-            /* توظيف الألوان للنمط الداكن */
             --bg-color: var(--forest-green);
             --text-main: var(--pale-sage);
             --text-muted: rgba(240, 255, 218, 0.6);
@@ -48,7 +45,7 @@
             z-index: 9999; transition: opacity 0.5s ease;
         }
         #splash h1 { font-size: 4rem; color: var(--pale-sage); font-weight: 900; animation: pulse 1.5s infinite alternate; }
-        .quran-verse { font-family: 'Amiri', serif; color: var(--petal-blush); font-size: 1.2rem; position: absolute; bottom: 40px; }
+        .quran-verse { font-family: 'Amiri', serif; color: var(--petal-blush); font-size: 1.1rem; position: absolute; bottom: 40px; opacity: 0.9; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
         /* --- الشريط العلوي --- */
@@ -58,9 +55,9 @@
         }
         .icon-btn { background: none; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         header h1 { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin: 0; }
-        .spacer { width: 24px; } /* للحفاظ على التوازن */
+        .spacer { width: 24px; }
 
-        /* --- منطقة المحتوى (الشبكة) --- */
+        /* --- منطقة المحتوى --- */
         main { flex: 1; overflow-y: auto; padding: 20px 15px; padding-bottom: 90px; }
         .posts-grid { 
             display: grid; 
@@ -73,13 +70,13 @@
         .post-card {
             background: var(--card-glass); border: 1px solid var(--border-color); border-radius: 16px;
             padding: 15px; display: flex; flex-direction: column; position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); color: var(--text-main);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); color: var(--forest-green); /* توحيد لون النص ليكون مقروءاً دائماً */
         }
         .card-text { font-family: 'Amiri', serif; font-size: 1.1rem; line-height: 1.6; flex: 1; margin-bottom: 12px; word-break: break-word; }
         .card-signature { font-size: 0.85rem; font-weight: 700; text-align: left; margin-bottom: 12px; opacity: 0.8; }
         .card-actions { display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 12px; }
-        .action-btn { background: none; border: none; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--text-main); opacity: 0.8; }
-        .action-btn:hover { color: var(--primary); opacity: 1; }
+        .action-btn { background: none; border: none; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: inherit; opacity: 0.8; }
+        .action-btn:hover { opacity: 1; }
         .action-btn svg { width: 18px; height: 18px; }
 
         /* --- الشريط السفلي --- */
@@ -111,7 +108,7 @@
         .color-dot { min-width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-dot.active { border-color: var(--primary); transform: scale(1.1); box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         
-        .submit-btn { width: 100%; background: var(--primary); color: var(--bg-color); border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .submit-btn { width: 100%; background: var(--primary); color: var(--pale-sage); border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .submit-btn:hover { opacity: 0.9; }
 
         @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -170,7 +167,6 @@
                     <div class="color-dot active" style="background: #F0FFDA;" data-color="#F0FFDA"></div>
                     <div class="color-dot" style="background: #FAC7FF;" data-color="#FAC7FF"></div>
                     <div class="color-dot" style="background: #FFFFFF;" data-color="#FFFFFF"></div>
-                    <div class="color-dot" style="background: #EAEAEA;" data-color="#EAEAEA"></div>
                 </div>
 
                 <button type="submit" class="submit-btn">نشر السُنة</button>
@@ -180,9 +176,9 @@
 
     <script>
         let selectedColor = '#F0FFDA';
-        let posts = JSON.parse(localStorage.getItem('tathakkar_v4')) || [];
+        let posts = JSON.parse(localStorage.getItem('tathakkar_final')) || [];
 
-        // إخفاء الشاشة الافتتاحية
+        // الشاشة الافتتاحية تختفي تلقائياً بعد 3 ثوانٍ
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash');
@@ -221,7 +217,7 @@
             const author = document.getElementById('authorInput').value;
             const text = document.getElementById('textInput').value;
             posts.unshift({ id: Date.now(), author, text, color: selectedColor, likes: 0 });
-            localStorage.setItem('tathakkar_v4', JSON.stringify(posts));
+            localStorage.setItem('tathakkar_final', JSON.stringify(posts));
             closeModal('addModal');
             document.querySelector('form').reset();
             switchView('home');
@@ -229,7 +225,7 @@
 
         function likePost(id) {
             const post = posts.find(p => p.id === id);
-            if (post) { post.likes++; localStorage.setItem('tathakkar_v4', JSON.stringify(posts)); renderPosts(); }
+            if (post) { post.likes++; localStorage.setItem('tathakkar_final', JSON.stringify(posts)); renderPosts(); }
         }
 
         function sharePost(text, author) {
@@ -247,8 +243,6 @@
                 const card = document.createElement('div');
                 card.className = 'post-card';
                 card.style.background = post.color;
-                // توحيد لون النص ليتناسب مع الألوان الفاتحة للمنشورات
-                card.style.color = '#073B2F';
 
                 card.innerHTML = `
                     <div class="card-text">${post.text}</div>
@@ -256,7 +250,7 @@
                     <div class="card-actions">
                         <button class="action-btn" onclick="likePost(${post.id})">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                            ${post.likes} إعجاب
+                            ${post.likes}
                         </button>
                         <button class="action-btn" onclick="sharePost('${post.text}', '${post.author}')">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
