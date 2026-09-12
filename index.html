@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تَذَكَّر | المبادرة المدرسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة حفظ الصور -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
-            --forest-green: #073B2F; --burgundy: #5E202B; --pale-sage: #F0FFDA; --petal-blush: #FAC7FF;
-            --bg-color: #e9f2e3; --text-main: var(--forest-green);
-            --glass-border: rgba(255, 255, 255, 0.4); --glass-shadow: 0 8px 32px 0 rgba(7, 59, 47, 0.1);
+            --forest-green: #073B2F;
+            --burgundy: #5E202B;
+            --pale-sage: #F0FFDA;
+            --petal-blush: #FAC7FF;
+
+            --bg-color: #e9f2e3;
+            --text-main: var(--forest-green);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(7, 59, 47, 0.1);
         }
 
         [data-theme="dark"] {
-            --bg-color: #04241d; --text-main: var(--pale-sage);
-            --glass-border: rgba(240, 255, 218, 0.1); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --bg-color: #04241d;
+            --text-main: var(--pale-sage);
+            --glass-border: rgba(240, 255, 218, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
         .theme-sage { --card-bg: rgba(240, 255, 218, 0.6); --card-text-color: var(--forest-green); }
@@ -28,20 +38,38 @@
         [data-theme="dark"] .theme-glass { --card-bg: rgba(255, 255, 255, 0.1); --card-text-color: #ffffff; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        body { 
+            background-color: var(--bg-color); color: var(--text-main); 
+            height: 100vh; display: flex; flex-direction: column; 
+            overflow: hidden; position: relative; 
+        }
 
+        /* خلفية متحركة تفاعلية */
         .animated-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 20s infinite ease-in-out alternate; }
         .orb-1 { width: 300px; height: 300px; background: var(--petal-blush); top: -50px; left: -50px; }
         .orb-2 { width: 400px; height: 400px; background: var(--pale-sage); bottom: -100px; right: -50px; animation-delay: -5s; }
         .orb-3 { width: 250px; height: 250px; background: var(--burgundy); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.2; animation-duration: 25s; }
 
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, 50px) scale(1.1); } 100% { transform: translate(-40px, 20px) scale(0.9); } }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 50px) scale(1.1); }
+            100% { transform: translate(-40px, 20px) scale(0.9); }
+        }
 
-        .glass-panel { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); }
+        .glass-panel {
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
+        }
 
-        header { background: rgba(255,255,255,0.2); display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; z-index: 10; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 10px; }
+        header {
+            background: rgba(255,255,255,0.2);
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;
+            z-index: 10; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 10px;
+        }
         [data-theme="dark"] header { background: rgba(0,0,0,0.2); }
+        
         .icon-btn { background: none; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.8;}
         header h1 { font-size: 1.8rem; font-weight: 900; color: var(--burgundy); margin: 0; letter-spacing: -0.5px; }
         [data-theme="dark"] header h1 { color: var(--petal-blush); }
@@ -49,83 +77,116 @@
         main { flex: 1; overflow-y: auto; padding: 10px 20px 100px 20px; }
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
         
-        .post-card { border-radius: 24px; padding: 25px; display: flex; flex-direction: column; position: relative; background: var(--card-bg); color: var(--card-text-color); transform: translateY(0); transition: transform 0.3s, box-shadow 0.3s; }
+        /* تصميم البطاقة */
+        .post-card {
+            border-radius: 24px; padding: 25px; display: flex; flex-direction: column; position: relative;
+            background: var(--card-bg); color: var(--card-text-color);
+            transform: translateY(0); transition: transform 0.3s, box-shadow 0.3s;
+        }
         .post-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15); }
         
-        .card-text { font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 1.8; flex: 1; margin-bottom: 20px; word-break: break-word; font-weight: 700; white-space: pre-wrap; }
+        .card-text { font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 1.8; flex: 1; margin-bottom: 20px; word-break: break-word; font-weight: 700; }
         .card-signature { font-size: 0.9rem; font-weight: 900; margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
-        .card-actions { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 15px; align-items: center; opacity: 0.8; }
+        .card-actions { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 15px; align-items: center; opacity: 0.8; flex-wrap: wrap; gap: 8px; }
         
         .action-btn { background: none; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; color: currentColor; opacity: 0.7; }
         .action-btn:hover { opacity: 1; transform: scale(1.05); }
         .action-btn.liked { opacity: 1; color: var(--burgundy); }
         [data-theme="dark"] .action-btn.liked { color: var(--petal-blush); }
+        
         .action-btn svg { width: 20px; height: 20px; }
         .delete-btn { color: #e74c3c !important; opacity: 0.8; }
 
-        .bottom-nav { background: rgba(255,255,255,0.3); position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 20; }
+        .bottom-nav {
+            background: rgba(255,255,255,0.3);
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px;
+            border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 20;
+        }
         [data-theme="dark"] .bottom-nav { background: rgba(0,0,0,0.3); }
         .nav-item { background: none; border: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: var(--text-main); opacity: 0.5; cursor: pointer; }
         .nav-item.active { opacity: 1; color: var(--burgundy); }
         [data-theme="dark"] .nav-item.active { color: var(--petal-blush); }
         .nav-fab { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--burgundy), var(--forest-green)); color: var(--pale-sage); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(94, 32, 43, 0.4); cursor: pointer; transform: translateY(-15px); border: 3px solid var(--glass-border); }
 
+        /* النوافذ المنبثقة */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--bg-color); width: 100%; max-width: 450px; border-radius: 24px; padding: 30px; position: relative; }
-        .close-modal { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.05); border-radius: 50%; width: 35px; height: 35px; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-color); width: 100%; max-width: 450px; border-radius: 24px; padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; }
+        
+        .close-modal { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.05); border-radius: 50%; width: 35px; height: 35px; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 101; }
         .modal-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 25px; color: var(--burgundy); text-align: center; }
         [data-theme="dark"] .modal-title { color: var(--petal-blush); }
+
         .form-input { width: 100%; background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.1); color: var(--text-main); padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1rem; outline: none; }
         textarea.form-input { font-family: 'Amiri', serif; font-size: 1.2rem; resize: none; }
+        
         .options-row { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 25px; justify-content: center; }
         .color-dot { min-width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(0,0,0,0.1); transition: 0.3s; }
         .color-dot.active { transform: scale(1.2); border-color: var(--forest-green); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        
         .submit-btn { width: 100%; background: var(--burgundy); color: var(--pale-sage); border: none; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* مؤشر التحميل */
+        .loading-spinner { display: none; text-align: center; margin: 50px 0; }
+        .loading-spinner.active { display: block; }
+        .spinner { border: 4px solid rgba(7, 59, 47, 0.1); border-top: 4px solid var(--burgundy); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* رسالة الخطأ */
+        .error-message { color: #e74c3c; text-align: center; padding: 15px; margin-bottom: 15px; background: rgba(231, 76, 60, 0.1); border-radius: 10px; display: none; }
+        .error-message.active { display: block; }
     </style>
 </head>
 <body data-theme="light">
 
+    <!-- الخلفية الحركية -->
     <div class="animated-bg">
-        <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
 
     <header class="glass-panel">
-        <button class="icon-btn" onclick="toggleTheme()" aria-label="تغيير النمط">
+        <button class="icon-btn" onclick="window.toggleTheme()" aria-label="تغيير النمط">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
         </button>
         <h1>تَذَكَّر</h1>
         <div style="width: 24px;"></div>
     </header>
 
-    <main><div id="postsContainer" class="posts-grid"></div></main>
+    <main>
+        <div class="error-message" id="errorMsg"></div>
+        <div class="loading-spinner" id="loadingSpinner"><div class="spinner"></div></div>
+        <div id="postsContainer" class="posts-grid"></div>
+    </main>
 
     <nav class="bottom-nav glass-panel">
-        <button class="nav-item active" onclick="switchView('home')">
+        <button class="nav-item active" onclick="window.switchView(event, 'home')">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
-        <button class="nav-fab" onclick="openModal('addModal')">
+        <button class="nav-fab" onclick="window.openModal('addModal')">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <button class="nav-item" onclick="switchView('leaderboard')">
+        <button class="nav-item" onclick="window.switchView(event, 'leaderboard')">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
         </button>
     </nav>
 
     <div class="modal-overlay" id="addModal">
         <div class="modal-content glass-panel">
-            <button class="close-modal" onclick="closeModal('addModal')">
+            <button class="close-modal" onclick="window.closeModal('addModal')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
             <h2 class="modal-title">أضف سُنة مهجورة</h2>
             <form id="postForm">
-                <input type="text" id="authorInput" class="form-input" placeholder="الاسم أو اللقب" required>
-                <textarea id="textInput" class="form-input" rows="4" placeholder="اكتب السُنة هنا..." required></textarea>
+                <input type="text" id="authorInput" class="form-input" placeholder="الاسم أو اللقب" required maxlength="50">
+                <textarea id="textInput" class="form-input" rows="4" placeholder="اكتب السُنة هنا..." required maxlength="500"></textarea>
                 
                 <div class="options-row" id="colorPicker">
-                    <div class="color-dot active" style="background: rgba(240, 255, 218, 0.8);" data-theme="theme-sage"></div>
-                    <div class="color-dot" style="background: rgba(250, 199, 255, 0.8);" data-theme="theme-blush"></div>
-                    <div class="color-dot" style="background: #ffffff;" data-theme="theme-glass"></div>
+                    <div class="color-dot active" style="background: rgba(240, 255, 218, 0.8);" data-theme="theme-sage" title="أخضر فاتح"></div>
+                    <div class="color-dot" style="background: rgba(250, 199, 255, 0.8);" data-theme="theme-blush" title="وردي"></div>
+                    <div class="color-dot" style="background: #ffffff;" data-theme="theme-glass" title="أبيض"></div>
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">نشر السُنة</button>
             </form>
@@ -136,6 +197,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // ⚠️ تحذير أمني: في بيئة الإنتاج، استخدم Firebase Security Rules و environment variables
         const firebaseConfig = {
             apiKey: "AIzaSyDSLuKFb3DDzXhzLRhkDvK24UKJSxGy4kY",
             authDomain: "tathakkar.firebaseapp.com",
@@ -158,21 +220,44 @@
         window.allPosts = [];
         let currentView = 'home';
 
-        window.openModal = (id) => document.getElementById(id).classList.add('active');
-        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+        // تحسين: معالجة آمنة للـ HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.openModal = (id) => {
+            document.getElementById(id).classList.add('active');
+            document.getElementById('postForm').reset();
+            selectedTheme = 'theme-sage';
+            document.querySelectorAll('.color-dot').forEach((d, i) => d.classList.toggle('active', i === 0));
+        };
+
+        window.closeModal = (id) => {
+            document.getElementById(id).classList.remove('active');
+            document.getElementById('postForm').reset();
+        };
         
-        window.switchView = (view) => {
+        window.switchView = (event, view) => {
             currentView = view;
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            event.target.closest('button').classList.add('active');
+            
             if(view === 'home') renderPosts(window.allPosts);
             if(view === 'leaderboard') renderLeaderboard(window.allPosts);
         };
 
         window.toggleTheme = () => {
             const body = document.body;
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('tathakkar_theme', newTheme);
         };
+
+        // تحميل النمط المحفوظ
+        const savedTheme = localStorage.getItem('tathakkar_theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
 
         document.querySelectorAll('.color-dot').forEach(dot => {
             dot.addEventListener('click', function() {
@@ -182,132 +267,202 @@
             });
         });
 
+        // قراءة البيانات مع معالجة الأخطاء
         const q = query(collection(db, "sunnahs"), orderBy("timestamp", "desc"));
         onSnapshot(q, (snapshot) => {
             window.allPosts = [];
-            snapshot.forEach((doc) => { window.allPosts.push({ id: doc.id, ...doc.data() }); });
+            snapshot.forEach((doc) => {
+                window.allPosts.push({ id: doc.id, ...doc.data() });
+            });
             if(currentView === 'home') renderPosts(window.allPosts);
             else renderLeaderboard(window.allPosts);
+            document.getElementById('loadingSpinner').classList.remove('active');
+        }, (error) => {
+            console.error('خطأ في جلب البيانات:', error);
+            showError('حدث خطأ في جلب البيانات. تحقق من الاتصال بالإنترنت.');
         });
 
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = "جاري النشر..."; btn.disabled = true;
+            const author = document.getElementById('authorInput').value.trim();
+            const text = document.getElementById('textInput').value.trim();
+
+            if (!author || !text) {
+                showError('يرجى ملء جميع الحقول.');
+                return;
+            }
+
+            btn.innerText = "جاري النشر...";
+            btn.disabled = true;
 
             try {
                 await addDoc(collection(db, "sunnahs"), {
-                    author: document.getElementById('authorInput').value,
-                    text: document.getElementById('textInput').value,
+                    author: author.substring(0, 50),
+                    text: text.substring(0, 500),
                     themeName: selectedTheme,
                     likedBy: [], 
                     ownerId: deviceId, 
                     timestamp: Date.now()
                 });
-                closeModal('addModal');
-                document.getElementById('postForm').reset();
+                window.closeModal('addModal');
+                showError(''); // إخفاء رسائل الخطأ
             } catch (error) {
-                alert("حدث خطأ في الاتصال.");
+                console.error('خطأ:', error);
+                showError('حدث خطأ في النشر. حاول مجدداً.');
+            } finally {
+                btn.innerText = "نشر السُنة";
+                btn.disabled = false;
             }
-            btn.innerText = "نشر السُنة"; btn.disabled = false;
         });
 
-        // تم الاستغناء عن تمرير البيانات في HTML واستبدالها بالـ ID فقط لمنع كسر الأكواد
-        window.toggleLike = async (id, hasLiked) => {
+        window.toggleLike = async (id) => {
+            const post = window.allPosts.find(p => p.id === id);
+            if (!post) return;
+
             const postRef = doc(db, "sunnahs", id);
-            if (hasLiked) await updateDoc(postRef, { likedBy: arrayRemove(deviceId) });
-            else await updateDoc(postRef, { likedBy: arrayUnion(deviceId) });
+            const hasLiked = post.likedBy && post.likedBy.includes(deviceId);
+            
+            try {
+                if (hasLiked) {
+                    await updateDoc(postRef, { likedBy: arrayRemove(deviceId) });
+                } else {
+                    await updateDoc(postRef, { likedBy: arrayUnion(deviceId) });
+                }
+            } catch (error) {
+                console.error('خطأ في تحديث الإعجاب:', error);
+                showError('حدث خطأ في تحديث الإعجاب.');
+            }
         };
 
         window.deletePost = async (id) => {
             if (confirm("هل أنت متأكد من حذف هذه السُنة نهائياً؟")) {
-                await deleteDoc(doc(db, "sunnahs", id));
+                try {
+                    await deleteDoc(doc(db, "sunnahs", id));
+                } catch (error) {
+                    console.error('خطأ في الحذف:', error);
+                    showError('حدث خطأ في حذف المنشور.');
+                }
             }
         };
 
-        window.sharePost = (id) => {
-            const post = window.allPosts.find(p => p.id === id);
-            if (!post) return;
-            if (navigator.share) navigator.share({ title: 'سُنة مهجورة', text: `${post.text} \n- ${post.author} \nتَذَكَّر`});
-            else alert('تم النسخ!');
+        window.sharePost = (text, author) => {
+            if (navigator.share) {
+                navigator.share({ 
+                    title: 'سُنة مهجورة', 
+                    text: `${text}\n- ${author}` 
+                }).catch(err => console.log('خطأ في المشاركة:', err));
+            } else {
+                // بديل إذا لم يكن الجهاز يدعم Web Share API
+                const textToCopy = `${text}\n- ${author}\nتَذَكَّر`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showError('تم نسخ المنشور إلى الحافظة!', true);
+                }).catch(() => alert('تعذر نسخ المنشور'));
+            }
         };
 
-        // تم التعديل على خاصية الحفظ لتعمل بشكل حي ومباشر على الشاشة بدون إنشاء نسخة مخفية تسبب مشاكل بالمتصفحات
-        window.saveAsImage = async (btn, id) => {
-            const post = window.allPosts.find(p => p.id === id);
-            if (!post) return;
-            
-            const card = btn.closest('.post-card');
-            const actions = card.querySelector('.card-actions');
-            const originalBg = card.style.background;
-            
-            // إخفاء الأزرار ووضع ألوان صلبة مؤقتة للتصوير
-            actions.style.display = 'none';
-            if(card.classList.contains('theme-blush')) card.style.background = '#FEE8FF';
-            else if(card.classList.contains('theme-glass')) card.style.background = '#FFFFFF';
-            else card.style.background = '#F5FFEA';
-
-            // إضافة الختم
-            const watermark = document.createElement('div');
-            watermark.id = 'temp-watermark';
-            watermark.innerHTML = '<div style="text-align:center; margin-top:15px; padding-top:15px; border-top:1px dashed #073B2F; font-size:1rem; font-weight:900; color:#073B2F; opacity:0.8;">نُشر عبر منصة تَذَكَّر 🌿</div>';
-            card.appendChild(watermark);
-
+        window.saveAsImage = async (btn, postId) => {
             try {
-                const canvas = await html2canvas(card, { scale: 3, backgroundColor: card.style.background, useCORS: true });
+                const originalCard = document.querySelector(`[data-post-id="${postId}"]`);
+                if (!originalCard) return;
+
+                const clone = originalCard.cloneNode(true);
+                clone.querySelector('.card-actions').remove();
+                
+                const watermark = document.createElement('div');
+                watermark.innerHTML = '<div style="text-align:center; margin-top:15px; padding-top:15px; border-top:1px dashed #073B2F; font-size:1rem; font-weight:900; color:#073B2F; opacity:0.8;">نُشر عبر منصة تَذَكَّر</div>';
+                clone.appendChild(watermark);
+
+                clone.style.position = 'absolute';
+                clone.style.left = '-9999px';
+                clone.style.width = '400px';
+                clone.style.borderRadius = '0';
+                clone.style.color = '#073B2F';
+                
+                if(clone.classList.contains('theme-blush')) clone.style.background = '#FEE8FF';
+                else if(clone.classList.contains('theme-glass')) clone.style.background = '#FFFFFF';
+                else clone.style.background = '#F5FFEA';
+
+                document.body.appendChild(clone);
+
+                const canvas = await html2canvas(clone, { 
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false,
+                    imageTimeout: 2000
+                });
+                
                 const link = document.createElement('a');
-                link.download = `sunnah_${post.author}.png`;
+                link.download = `sunnah_${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+                
+                clone.remove();
+                showError('تم حفظ الصورة بنجاح!', true);
             } catch (err) {
-                alert('حدث خطأ أثناء حفظ الصورة.');
-            } finally {
-                // إعادة البطاقة لشكلها الطبيعي
-                document.getElementById('temp-watermark')?.remove();
-                actions.style.display = 'flex';
-                card.style.background = originalBg;
+                console.error('خطأ في حفظ الصورة:', err);
+                showError('حدث خطأ أثناء حفظ الصورة.');
             }
         };
+
+        function showError(message, isSuccess = false) {
+            const errorEl = document.getElementById('errorMsg');
+            errorEl.textContent = message;
+            errorEl.classList.toggle('active', !!message);
+            if (isSuccess) {
+                errorEl.style.background = 'rgba(46, 204, 113, 0.1)';
+                errorEl.style.color = '#27ae60';
+            } else {
+                errorEl.style.background = 'rgba(231, 76, 60, 0.1)';
+                errorEl.style.color = '#e74c3c';
+            }
+        }
 
         function renderPosts(posts) {
             const container = document.getElementById('postsContainer');
-            container.innerHTML = posts.length === 0 ? '<p style="text-align:center; margin-top:50px; opacity:0.6;">لا توجد مشاركات بعد..</p>' : '';
+            container.innerHTML = '';
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; margin-top:50px; opacity:0.6; grid-column:1/-1;">لا توجد مشاركات بعد..</p>';
+                return;
+            }
             
             posts.forEach(post => {
                 const themeClass = post.themeName || 'theme-sage';
                 const card = document.createElement('div');
                 card.className = `post-card glass-panel ${themeClass}`;
+                card.setAttribute('data-post-id', post.id);
 
                 const likesArray = post.likedBy || [];
                 const likeCount = likesArray.length;
                 const hasLiked = likesArray.includes(deviceId);
-                const isOwner = post.ownerId === deviceId; 
+                const isOwner = post.ownerId === deviceId;
 
-                // تمرير الـ ID فقط للأزرار يحمي الكود من الكسر عند وجود مسافات بالنص
+                const safeText = escapeHtml(post.text);
+                const safeAuthor = escapeHtml(post.author);
+
                 card.innerHTML = `
-                    <div class="card-text">${post.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+                    <div class="card-text">${safeText}</div>
                     <div class="card-signature">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        ${post.author.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                        ${safeAuthor}
                     </div>
                     <div class="card-actions">
-                        <div style="display: flex; gap: 12px;">
-                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${hasLiked})" title="إعجاب">
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="window.toggleLike('${post.id}')" title="إعجاب">
                                 <svg viewBox="0 0 24 24" fill="${hasLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                                 ${likeCount}
                             </button>
-                            <button class="action-btn" onclick="saveAsImage(this, '${post.id}')" title="حفظ كصورة">
+                            <button class="action-btn" onclick="window.saveAsImage(this, '${post.id}')" title="حفظ كصورة">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             </button>
-                            <button class="action-btn" onclick="sharePost('${post.id}')" title="مشاركة">
+                            <button class="action-btn" onclick="window.sharePost('${safeText}', '${safeAuthor}')" title="مشاركة">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                             </button>
                         </div>
-                        ${isOwner ? `
-                        <button class="action-btn delete-btn" onclick="deletePost('${post.id}')" title="حذف المنشور">
+                        ${isOwner ? `<button class="action-btn delete-btn" onclick="window.deletePost('${post.id}')" title="حذف المنشور">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
-                        ` : ''}
+                        </button>` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -316,21 +471,32 @@
 
         function renderLeaderboard(posts) {
             const container = document.getElementById('postsContainer');
-            container.innerHTML = '<h2 style="text-align:center; margin-bottom:25px; color:var(--burgundy);">المتصدرين</h2>';
+            container.innerHTML = '';
             
             const sorted = [...posts].sort((a, b) => (b.likedBy?.length || 0) - (a.likedBy?.length || 0)).slice(0, 10);
+            
+            if (sorted.length === 0) {
+                container.innerHTML = '<p style="text-align:center; margin-top:50px; opacity:0.6; grid-column:1/-1;">لا توجد مشاركات بعد..</p>';
+                return;
+            }
+            
+            const title = document.createElement('h2');
+            title.style = 'text-align:center; margin-bottom:25px; color:var(--burgundy); grid-column:1/-1;';
+            title.textContent = 'المتصدرين';
+            container.appendChild(title);
             
             sorted.forEach((post, index) => {
                 const div = document.createElement('div');
                 div.className = 'glass-panel';
-                div.style = 'padding:15px 20px; border-radius:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.1);';
+                div.style = 'padding:15px 20px; border-radius:16px; display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.1); grid-column:1/-1;';
                 
                 const likeCount = post.likedBy?.length || 0;
+                const preview = escapeHtml(post.text).substring(0, 40);
                 
                 div.innerHTML = `
                     <div>
-                        <strong style="font-size:1.1rem; color:var(--text-main);">#${index+1} ${post.author.replace(/</g, "&lt;")}</strong> 
-                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--text-main);">${post.text.substring(0,40).replace(/</g, "&lt;")}...</span>
+                        <strong style="font-size:1.1rem; color:var(--text-main);">#${index+1} ${escapeHtml(post.author)}</strong> 
+                        <span style="font-size:0.9rem; opacity:0.7; display:block; margin-top:5px; color:var(--text-main);">${preview}...</span>
                     </div> 
                     <div style="color:var(--burgundy); font-weight:900; font-size:1.2rem; display:flex; align-items:center; gap:5px;">
                         <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 
