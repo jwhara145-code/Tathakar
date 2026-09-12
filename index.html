@@ -70,7 +70,7 @@
         .post-card {
             background: var(--card-glass); border: 1px solid var(--border-color); border-radius: 16px;
             padding: 15px; display: flex; flex-direction: column; position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); color: var(--forest-green); /* توحيد لون النص ليكون مقروءاً دائماً */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); color: var(--forest-green); 
         }
         .card-text { font-family: 'Amiri', serif; font-size: 1.1rem; line-height: 1.6; flex: 1; margin-bottom: 12px; word-break: break-word; }
         .card-signature { font-size: 0.85rem; font-weight: 700; text-align: left; margin-bottom: 12px; opacity: 0.8; }
@@ -116,13 +116,11 @@
 </head>
 <body data-theme="light">
 
-    <!-- الشاشة الافتتاحية -->
     <div id="splash">
         <h1>تَذَكَّر</h1>
         <p class="quran-verse">(فَذَكِّرْ إِنَّ الذِّكْرَى تَنفَعُ الْمُؤْمِنِينَ)</p>
     </div>
 
-    <!-- الشريط العلوي -->
     <header>
         <button class="icon-btn" onclick="toggleTheme()" aria-label="تبديل النمط">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -133,12 +131,8 @@
         <div class="spacer"></div>
     </header>
 
-    <!-- المحتوى الرئيسي -->
-    <main>
-        <div id="postsContainer" class="posts-grid"></div>
-    </main>
+    <main><div id="postsContainer" class="posts-grid"></div></main>
 
-    <!-- الشريط السفلي -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchView('home')" aria-label="الرئيسية">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -151,14 +145,13 @@
         </button>
     </nav>
 
-    <!-- نافذة الإضافة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('addModal')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
             <h2 class="modal-title">أضف سُنة مهجورة</h2>
-            <form onsubmit="addPost(event)">
+            <form id="postForm">
                 <input type="text" id="authorInput" class="form-input" placeholder="الاسم أو اللقب" required>
                 <textarea id="textInput" class="form-input" rows="4" placeholder="اكتب السُنة هنا..." required></textarea>
                 
@@ -169,16 +162,32 @@
                     <div class="color-dot" style="background: #FFFFFF;" data-color="#FFFFFF"></div>
                 </div>
 
-                <button type="submit" class="submit-btn">نشر السُنة</button>
+                <button type="submit" class="submit-btn" id="submitBtn">نشر السُنة</button>
             </form>
         </div>
     </div>
 
-    <script>
-        let selectedColor = '#F0FFDA';
-        let posts = JSON.parse(localStorage.getItem('tathakkar_final')) || [];
+    <!-- استدعاء Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // الشاشة الافتتاحية تختفي تلقائياً بعد 3 ثوانٍ
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSLuKFb3DDzXhzLRhkDvK24UKJSxGy4kY",
+            authDomain: "tathakkar.firebaseapp.com",
+            projectId: "tathakkar",
+            storageBucket: "tathakkar.firebasestorage.app",
+            messagingSenderId: "519113054003",
+            appId: "1:519113054003:web:331ce2e58585e985ed9046"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let selectedColor = '#F0FFDA';
+        let allPosts = [];
+        let currentView = 'home';
+
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash');
@@ -187,22 +196,22 @@
             }, 3000); 
         });
 
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        function switchView(view) {
+        window.openModal = (id) => document.getElementById(id).classList.add('active');
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+        
+        window.switchView = (view) => {
+            currentView = view;
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            if(view === 'home') renderPosts();
-            if(view === 'leaderboard') renderLeaderboard();
-        }
+            if(view === 'home') renderPosts(allPosts);
+            if(view === 'leaderboard') renderLeaderboard(allPosts);
+        };
 
-        function toggleTheme() {
+        window.toggleTheme = () => {
             const body = document.body;
             body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-        }
+        };
 
-        // اختيار اللون
         document.querySelectorAll('.color-dot').forEach(dot => {
             dot.addEventListener('click', function() {
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
@@ -211,44 +220,73 @@
             });
         });
 
-        // إضافة المنشور
-        function addPost(e) {
+        // الاستماع المباشر لقاعدة البيانات (يُحدّث الشاشة فوراً عند كل إضافة)
+        const q = query(collection(db, "sunnahs"), orderBy("timestamp", "desc"));
+        onSnapshot(q, (snapshot) => {
+            allPosts = [];
+            snapshot.forEach((doc) => {
+                allPosts.push({ id: doc.id, ...doc.data() });
+            });
+            
+            if(currentView === 'home') renderPosts(allPosts);
+            else renderLeaderboard(allPosts);
+        }, (error) => {
+            console.error("خطأ في قراءة البيانات: ", error);
+            document.getElementById('postsContainer').innerHTML = '<p style="text-align:center; margin-top:50px; color:var(--text-muted); grid-column:1/-1;">لم يتم تفعيل قاعدة البيانات بعد (Firestore). تأكدي من إنشائها من لوحة تحكم Firebase.</p>';
+        });
+
+        // إضافة سُنة
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "جاري النشر..."; btn.disabled = true;
+
             const author = document.getElementById('authorInput').value;
             const text = document.getElementById('textInput').value;
-            posts.unshift({ id: Date.now(), author, text, color: selectedColor, likes: 0 });
-            localStorage.setItem('tathakkar_final', JSON.stringify(posts));
-            closeModal('addModal');
-            document.querySelector('form').reset();
-            switchView('home');
-        }
 
-        function likePost(id) {
-            const post = posts.find(p => p.id === id);
-            if (post) { post.likes++; localStorage.setItem('tathakkar_final', JSON.stringify(posts)); renderPosts(); }
-        }
+            try {
+                await addDoc(collection(db, "sunnahs"), {
+                    author: author,
+                    text: text,
+                    color: selectedColor,
+                    likes: 0,
+                    timestamp: Date.now()
+                });
+                closeModal('addModal');
+                document.getElementById('postForm').reset();
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("تأكدي من تفعيل Firestore Database في وضع Test Mode من حسابك.");
+            }
+            btn.innerText = "نشر السُنة"; btn.disabled = false;
+        });
 
-        function sharePost(text, author) {
-            if (navigator.share) {
-                navigator.share({ title: 'سُنة مهجورة', text: `${text} \n- بواسطة: ${author} \nشاركونا الأجر عبر موقع تَذَكَّر`});
-            } else { alert('تم نسخ النص للمشاركة!'); }
-        }
+        // الإعجاب بالسُنة
+        window.likePost = async (id) => {
+            const postRef = doc(db, "sunnahs", id);
+            await updateDoc(postRef, {
+                likes: increment(1)
+            });
+        };
 
-        // عرض المنشورات
-        function renderPosts() {
+        window.sharePost = (text, author) => {
+            if (navigator.share) navigator.share({ title: 'سُنة مهجورة', text: `${text} \n- بواسطة: ${author} \nشاركونا الأجر عبر موقع تَذَكَّر`});
+            else alert('تم نسخ النص للمشاركة!');
+        };
+
+        function renderPosts(posts) {
             const container = document.getElementById('postsContainer');
-            container.innerHTML = posts.length === 0 ? '<p style="text-align:center; margin-top:50px; color:var(--text-muted); grid-column:1/-1;">لا توجد مشاركات بعد. ابدأ بنشر سُنة!</p>' : '';
+            container.innerHTML = posts.length === 0 ? '<p style="text-align:center; margin-top:50px; color:var(--text-muted); grid-column:1/-1;">لا توجد مشاركات بعد.. كوني أول من ينشر سُنة!</p>' : '';
             
             posts.forEach(post => {
                 const card = document.createElement('div');
                 card.className = 'post-card';
                 card.style.background = post.color;
-
                 card.innerHTML = `
                     <div class="card-text">${post.text}</div>
                     <div class="card-signature">بواسطة: ${post.author}</div>
                     <div class="card-actions">
-                        <button class="action-btn" onclick="likePost(${post.id})">
+                        <button class="action-btn" onclick="likePost('${post.id}')">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                             ${post.likes}
                         </button>
@@ -262,8 +300,7 @@
             });
         }
 
-        // عرض المتصدرين
-        function renderLeaderboard() {
+        function renderLeaderboard(posts) {
             const container = document.getElementById('postsContainer');
             container.innerHTML = '<h2 style="grid-column:1/-1; text-align:center; margin-bottom:20px; color:var(--primary);">المتصدرين</h2>';
             const sorted = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 10);
@@ -275,9 +312,6 @@
                 container.appendChild(div);
             });
         }
-
-        // التهيئة الأولى
-        renderPosts();
     </script>
 </body>
 </html>
